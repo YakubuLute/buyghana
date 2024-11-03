@@ -1,1 +1,47 @@
 node_modules/
+./node_modules/
+
+
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+/mobile_app/buy_ghana/**/doc/api/
+/mobile_app/buy_ghana/**/ios/Flutter/.last_build_id
+/mobile_app/buy_ghana/.dart_tool/
+/mobile_app/buy_ghana/.flutter-plugins
+/mobile_app/buy_ghana/.flutter-plugins-dependencies
+/mobile_app/buy_ghana/.pub-cache/
+/mobile_app/buy_ghana/.pub/
+/mobile_app/buy_ghana//build/
+
+# Symbolication related
+/mobile_app/buy_ghana/app.*.symbols
+
+# Obfuscation related
+/mobile_app/buy_ghana/app.*.map.json
+
+# Android Studio will place build artifacts here
+/mobile_app/buy_ghana//android/app/debug
+/mobile_app/buy_ghana//android/app/profile
+/mobile_app/buy_ghana//android/app/release
