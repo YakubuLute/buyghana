@@ -1,0 +1,1 @@
+ D:\\New\ folder\\Development\\Personal\ Projects\\buy_ghana\\buyghana\\client\\mobile_app\\buy_ghana\\.dart_tool\\flutter_build\\efa25d12e0bc70d779724294a9c686ae\\native_assets.yaml: 
