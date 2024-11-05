@@ -1,2 +1,2 @@
 # buyghana
-Buyghana is an E-Commerce platform for mobile and web platforms
+Buyghana is an E-Commerce platform tailored towards made in Ghana Products. 
