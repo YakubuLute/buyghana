@@ -1,13 +1,37 @@
-node_modules/
-./node_modules/
+# Dependencies
+**/node_modules/
+node_modules
+
+# Environment files
+**/.env
+.env
 /server/.env
+
+# Client-specific
+/client/web_app/buy_ghana/.env
+/client/mobile_app/buy_ghana/.env
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs and debugging
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Build directories
+/dist
+/build
+.next/
 
 # Miscellaneous
 *.class
-*.log
 *.pyc
-*.swp
-.DS_Store
 .atom/
 .buildlog/
 .history
@@ -18,14 +42,8 @@ migrate_working_dir/
 *.iml
 *.ipr
 *.iws
-.idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
+# Mobile app specific (keeping your existing mobile configurations)
 /mobile_app/buy_ghana/**/doc/api/
 /mobile_app/buy_ghana/**/ios/Flutter/.last_build_id
 /mobile_app/buy_ghana/.dart_tool/
@@ -33,15 +51,9 @@ migrate_working_dir/
 /mobile_app/buy_ghana/.flutter-plugins-dependencies
 /mobile_app/buy_ghana/.pub-cache/
 /mobile_app/buy_ghana/.pub/
-/mobile_app/buy_ghana//build/
-
-# Symbolication related
+/mobile_app/buy_ghana/build/
 /mobile_app/buy_ghana/app.*.symbols
-
-# Obfuscation related
 /mobile_app/buy_ghana/app.*.map.json
-
-# Android Studio will place build artifacts here
-/mobile_app/buy_ghana//android/app/debug
-/mobile_app/buy_ghana//android/app/profile
-/mobile_app/buy_ghana//android/app/release
+/mobile_app/buy_ghana/android/app/debug
+/mobile_app/buy_ghana/android/app/profile
+/mobile_app/buy_ghana/android/app/release
