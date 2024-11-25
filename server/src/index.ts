@@ -46,4 +46,4 @@ app.listen(PORT, () => {
 })
 
 // Connect to MongoDB
-connectDB();
+// connectDB();

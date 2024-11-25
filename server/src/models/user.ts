@@ -1,6 +1,38 @@
-import { model, Schema } from 'mongoose'
+import { model, Schema, Document } from 'mongoose'
 
-const userSchema = new Schema({
+// Define interface for Wishlist item
+interface IWishlistItem {
+  productId: Schema.Types.ObjectId
+  productName: string
+  productImage: string
+  productPrice: number
+}
+
+// Define interface for User document
+interface IUser extends Document {
+  name: string
+  email: string
+  passwordHash: string
+  isAdmin: boolean
+  resetPasswordOTP?: number
+  resetPasswordOTPExpires?: Date
+  resetPasswordToken?: string
+  resetPasswordTokenExpiration?: Date
+  isVerified: boolean
+  wishlist: IWishlistItem[]
+  verificationToken?: string
+  verificationTokenExpiration?: Date
+  phone: string
+  street?: string
+  apartment?: string
+  city?: string
+  postalCode?: string
+  country?: string
+  createdAt: Date
+  updatedAt?: Date
+}
+
+const userSchema = new Schema<IUser>({
   name: {
     type: String,
     required: true,
@@ -74,6 +106,9 @@ const userSchema = new Schema({
   }
 })
 
+// Index for email uniqueness
 userSchema.index({ email: 1 }, { unique: true })
 
-exports.User = model('User', userSchema)
+// Create and export the model
+const User = model<IUser>('User', userSchema)
+export default User
