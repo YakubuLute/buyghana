@@ -1,36 +1,6 @@
 import { model, Schema, Document } from 'mongoose'
+import { IUser } from '../Interface/interface'
 
-// Define interface for Wishlist item
-interface IWishlistItem {
-  productId: Schema.Types.ObjectId
-  productName: string
-  productImage: string
-  productPrice: number
-}
-
-// Define interface for User document
-interface IUser extends Document {
-  name: string
-  email: string
-  passwordHash: string
-  isAdmin: boolean
-  resetPasswordOTP?: number
-  resetPasswordOTPExpires?: Date
-  resetPasswordToken?: string
-  resetPasswordTokenExpiration?: Date
-  isVerified: boolean
-  wishlist: IWishlistItem[]
-  verificationToken?: string
-  verificationTokenExpiration?: Date
-  phone: string
-  street?: string
-  apartment?: string
-  city?: string
-  postalCode?: string
-  country?: string
-  createdAt: Date
-  updatedAt?: Date
-}
 
 const userSchema = new Schema<IUser>({
   name: {

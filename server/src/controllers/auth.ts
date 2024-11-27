@@ -4,41 +4,27 @@ import jwt from 'jsonwebtoken'
 import User from '../models/user'
 import { sendEmail } from '../utils/email'
 import { generateOTP } from '../utils/otp'
+import { CustomError, ITokenSchema, TokenPayload } from '../Interface/interface'
+import { Token } from '../models/token-schema'
 
-// Custom error handler type
-interface CustomError extends Error {
-  code?: number
-  keyPattern?: { [key: string]: number }
-}
-
-// JWT token payload interface
-interface TokenPayload {
-  userId: string
-  email: string
-  isAdmin: boolean
-}
-
-export const register = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password, phone } = req.body
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email: email.toLowerCase() })
     if (existingUser) {
-      return res.status(400).json({ error: 'Email already registered' })
+      res.status(400).json({ error: 'Email already registered' })
+      return
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(password, salt)
 
-    // Generate verification token
     const verificationToken = generateOTP(6)
     const verificationTokenExpiration = new Date(
       Date.now() + 24 * 60 * 60 * 1000
-    ) // 24 hours
+    )
 
-    // Create new user
     const user = new User({
       name,
       email: email.toLowerCase(),
@@ -49,9 +35,14 @@ export const register = async (req: Request, res: Response) => {
       isVerified: false
     })
 
-    await user.save()
-
-    // Send verification email
+    let savedUser = await user.save()
+    if (!savedUser) {
+      res.status(500).json({
+        error: 'Internal server error',
+        message: 'Could not create a new user'
+      })
+      return
+    }
     await sendEmail({
       to: email,
       subject: 'Verify Your Account',
@@ -66,51 +57,76 @@ export const register = async (req: Request, res: Response) => {
   } catch (error) {
     const err = error as CustomError
     if (err.code === 11000) {
-      return res.status(400).json({ error: 'Email already registered' })
+      res.status(400).json({ error: 'Email already registered' })
+      return
     }
     console.error(error)
     res.status(500).json({ error: 'Internal server error' })
   }
 }
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body
 
-    // Find user
     const user = await User.findOne({ email: email.toLowerCase() })
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' })
+      res.status(401).json({
+        error: 'Invalid credentials',
+        message: 'User with this email do not exist'
+      })
+      return
     }
 
-    // Verify password
     const isValidPassword = await bcrypt.compare(password, user.passwordHash)
     if (!isValidPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' })
+      res
+        .status(401)
+        .json({ error: 'Invalid credentials', message: 'Invalid password' })
+      return
     }
 
-    // Check if user is verified
     if (!user.isVerified) {
-      return res.status(403).json({ error: 'Please verify your email first' })
+      res.status(403).json({ error: 'Please verify your email first' })
+      return
     }
 
-    // Generate JWT token
     const tokenPayload: TokenPayload = {
       userId: user._id || user.id,
       email: user.email,
       isAdmin: user.isAdmin
     }
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       tokenPayload,
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '24h' }
+      process.env.ACCESS_TOKEN_SECRET || '',
+      {
+        expiresIn: '24h'
+      }
+    )
+    const refreshToken = jwt.sign(
+      tokenPayload,
+      process.env.REFRESH_TOKEN_SECRET || '',
+      {
+        expiresIn: '60d'
+      }
     )
 
+    let savedToken = await Token.findOne({ userId: user._id || user.id })
+    if (savedToken) {
+      await savedToken.deleteOne()
+    } else if (!savedToken) {
+      new Token({
+        userId: user.id || user._id,
+        refreshToken,
+        accessToken
+      }).save()
+    }
+
     res.json({
-      token,
+      refreshToken,
       user: {
-        id: user._id,
+        id: user._id || user.id,
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin
@@ -122,28 +138,28 @@ export const login = async (req: Request, res: Response) => {
   }
 }
 
-export const forgotPassword = async (req: Request, res: Response) => {
+export const forgotPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { email } = req.body
 
     const user = await User.findOne({ email: email.toLowerCase() })
     if (!user) {
-      // Return success even if user not found for security
-      return res.json({
+      res.json({
         message: 'If your email is registered, you will receive a reset code.'
       })
+      return
     }
 
-    // Generate OTP
     const otp = generateOTP(6)
-    const otpExpiration = new Date(Date.now() + 30 * 60 * 1000) // 30 minutes
+    const otpExpiration = new Date(Date.now() + 30 * 60 * 1000)
 
-    // Update user with OTP
     user.resetPasswordOTP = parseInt(otp)
     user.resetPasswordOTPExpires = otpExpiration
     await user.save()
 
-    // Send OTP email
     await sendEmail({
       to: email,
       subject: 'Password Reset Code',
@@ -159,7 +175,10 @@ export const forgotPassword = async (req: Request, res: Response) => {
   }
 }
 
-export const verifyPasswordResetOTP = async (req: Request, res: Response) => {
+export const verifyPasswordResetOTP = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { email, otp } = req.body
 
@@ -170,19 +189,18 @@ export const verifyPasswordResetOTP = async (req: Request, res: Response) => {
     })
 
     if (!user) {
-      return res.status(400).json({ error: 'Invalid or expired OTP' })
+      res.status(400).json({ error: 'Invalid or expired OTP' })
+      return
     }
 
-    // Generate reset token
     const resetToken = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '15m' }
     )
 
-    // Save reset token
     user.resetPasswordToken = resetToken
-    user.resetPasswordTokenExpiration = new Date(Date.now() + 15 * 60 * 1000) // 15 minutes
+    user.resetPasswordTokenExpiration = new Date(Date.now() + 15 * 60 * 1000)
     user.resetPasswordOTP = undefined
     user.resetPasswordOTPExpires = undefined
     await user.save()
@@ -194,11 +212,13 @@ export const verifyPasswordResetOTP = async (req: Request, res: Response) => {
   }
 }
 
-export const resetPassword = async (req: Request, res: Response) => {
+export const resetPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { resetToken, newPassword } = req.body
 
-    // Verify token and find user
     const decoded = jwt.verify(
       resetToken,
       process.env.JWT_SECRET || 'your-secret-key'
@@ -210,14 +230,13 @@ export const resetPassword = async (req: Request, res: Response) => {
     })
 
     if (!user) {
-      return res.status(400).json({ error: 'Invalid or expired reset token' })
+      res.status(400).json({ error: 'Invalid or expired reset token' })
+      return
     }
 
-    // Hash new password
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(newPassword, salt)
 
-    // Update user password and clear reset token
     user.passwordHash = passwordHash
     user.resetPasswordToken = undefined
     user.resetPasswordTokenExpiration = undefined
@@ -226,7 +245,8 @@ export const resetPassword = async (req: Request, res: Response) => {
     res.json({ message: 'Password reset successful' })
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(400).json({ error: 'Invalid reset token' })
+      res.status(400).json({ error: 'Invalid reset token' })
+      return
     }
     console.error(error)
     res.status(500).json({ error: 'Internal server error' })
