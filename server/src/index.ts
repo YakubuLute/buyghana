@@ -1,4 +1,3 @@
-
 import express from 'express'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
@@ -46,4 +45,4 @@ app.listen(PORT, () => {
 })
 
 // Connect to MongoDB
-// connectDB();
+connectDB()

@@ -115,9 +115,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     let savedToken = await Token.findOne({ userId: user._id || user.id })
     if (savedToken) {
       await savedToken.deleteOne()
-    } else if (!savedToken) {
+    } else {
       new Token({
-        userId: user.id || user._id,
+        userId: user.id,
         refreshToken,
         accessToken
       }).save()
@@ -126,7 +126,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.json({
       refreshToken,
       user: {
-        id: user._id || user.id,
+        id: user.id,
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin
