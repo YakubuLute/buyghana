@@ -21,7 +21,7 @@ export const sendEmail = async (options: EmailOptions) => {
       from: process.env.EMAIL_USER, 
       to: options.to,
       subject: options.subject,
-      text: options.text
+      text: options.text 
     }
 
     // Sending email to the user

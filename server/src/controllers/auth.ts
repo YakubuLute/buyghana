@@ -20,18 +20,20 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(password, salt)
 
-    const verificationToken = generateOTP(6)
-    const verificationTokenExpiration = new Date(
-      Date.now() + 24 * 60 * 60 * 1000
+    // generate OTP of 6 chars and set the OTP expiration time to 3 mins
+    const accountVerificationOTP = generateOTP(6)
+    const accountVerificationOTPExpiration = new Date(
+      Date.now() + 3 * 60 * 1000
     )
 
+    // user object
     const user = new User({
       name,
       email: email.toLowerCase(),
       passwordHash,
       phone,
-      verificationToken,
-      verificationTokenExpiration,
+      accountVerificationOTP,
+      accountVerificationOTPExpiration,
       isVerified: false
     })
 
@@ -46,7 +48,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     await sendEmail({
       to: email,
       subject: 'Verify Your Account',
-      text: `Your verification code is: ${verificationToken}`
+      text: `Your verification code is: ${accountVerificationOTP}`
     })
 
     res.status(201).json({
@@ -195,20 +197,20 @@ export const verifyPasswordResetOTP = async (
 
     const resetToken = jwt.sign(
       { userId: user._id },
-      process.env.JWT_SECRET || 'your-secret-key',
+      process.env.ACCESS_TOKEN_SECRET || '',
       { expiresIn: '15m' }
     )
 
     user.resetPasswordToken = resetToken
     user.resetPasswordTokenExpiration = new Date(Date.now() + 15 * 60 * 1000)
-    user.resetPasswordOTP = undefined
+    user.resetPasswordOTP = undefined // or can set it to 1
     user.resetPasswordOTPExpires = undefined
     await user.save()
 
-    res.json({ resetToken })
+    res.json({ resetToken, message: 'OTP confirmed successfully' })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Internal server error' })
+    res.status(500).json({ message: 'Internal server error', error: error })
   }
 }
 
@@ -221,8 +223,11 @@ export const resetPassword = async (
 
     const decoded = jwt.verify(
       resetToken,
-      process.env.JWT_SECRET || 'your-secret-key'
+      process.env.ACCESS_TOKEN_SECRET || ''
     ) as { userId: string }
+
+    // search for user
+    //TODO: Let's use email if the user is not found becuase of the token
     const user = await User.findOne({
       _id: decoded.userId,
       resetPasswordToken: resetToken,
@@ -234,6 +239,12 @@ export const resetPassword = async (
       return
     }
 
+    //TODO: we can try this instead of using resetToken
+    // if (user.resetPasswordOTP !== 1) {
+    //   res.json({ error: 'Invalid or expired reset password OTP' })
+    // }
+
+    // encrypt new password
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(newPassword, salt)
 
@@ -249,6 +260,80 @@ export const resetPassword = async (
       return
     }
     console.error(error)
+    res.status(500).json({ message: 'Internal server error', error: error })
+  }
+}
+
+export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, otp } = req.body
+
+    // Find the user by email
+    const user = await User.findOne({ email: email.toLowerCase() })
+
+    if (!user) {
+      res.status(404).json({ error: 'User not found' })
+      return
+    }
+
+    // Check if OTP matches and is not expired
+    const now = new Date()
+    if (
+      user.accountVerificationOTP !== otp ||
+      !user.accountVerificationOTPExpiration ||
+      user.accountVerificationOTPExpiration < now
+    ) {
+      res.status(400).json({ error: 'Invalid or expired OTP' })
+      return
+    }
+
+    // Update user's verification status
+    user.isVerified = true
+
+    // Clear the OTP
+    user.accountVerificationOTP = null as any
+
+    // Clear the expiration date
+    user.accountVerificationOTPExpiration = null as any
+
+    // save user changes to the db
+    await user.save()
+
+    res.status(200).json({ message: 'Account verified successfully' })
+  } catch (error) {
+    console.error('Error during OTP verification:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+export const verifyToken = async (req: Request, res: Response) => {
+  try {
+    let accessToken = req.headers.authorization
+    if (!accessToken) {
+      res.status(401).json({ error: 'No token provided', status: false })
+      return
+    }
+    accessToken = accessToken.replace('Bearer', '').trim()
+
+    const token = await Token.findOne({ accessToken: accessToken })
+    if (!token) {
+      res.status(401).json({ error: 'Token not found', status: false })
+      return
+    }
+
+    const decodedToken = jwt.decode(token.refreshToken || '') as any
+    const user = await User.findById(decodedToken.id)
+    if (!user) return res.json({ error: 'User not found', status: false })
+    const isValid = jwt.verify(
+      token.refreshToken || '',
+      process.env.REFRESH_TOKEN_SECRET || ''
+    )
+    if (!isValid) {
+      res.status(401).json({ error: 'Invalid token', status: false })
+    }
+    return res.status(200).json({ status: true, message: 'Token is valid' })
+  } catch (error) {
+    console.error('Error during token verification:', error)
     res.status(500).json({ error: 'Internal server error' })
   }
 }

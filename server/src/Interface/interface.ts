@@ -23,6 +23,7 @@ export interface IWishlistItem {
 
 // Define interface for User document
 export interface IUser extends Document {
+  id?: Schema.Types.ObjectId,
   name: string
   email: string
   passwordHash: string
@@ -33,8 +34,10 @@ export interface IUser extends Document {
   resetPasswordTokenExpiration?: Date
   isVerified: boolean
   wishlist: IWishlistItem[]
-  verificationToken?: string
-  verificationTokenExpiration?: Date
+  accountVerificationOTP?: string
+  accountVerificationOTPExpiration?: Date
+  verifyToken?: string
+  verificationTokenExpiration?: Date 
   phone: string
   street?: string
   apartment?: string
@@ -52,5 +55,3 @@ export interface ITokenSchema extends Document {
   createdAt?: Date
   expiresAt?: Date
 }
-
-

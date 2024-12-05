@@ -1,7 +1,6 @@
 import { model, Schema, Document } from 'mongoose'
 import { IUser } from '../Interface/interface'
 
-
 const userSchema = new Schema<IUser>({
   name: {
     type: String,
@@ -55,7 +54,9 @@ const userSchema = new Schema<IUser>({
       }
     }
   ],
-  verificationToken: String,
+  accountVerificationOTP: String,
+  accountVerificationOTPExpiration: Date,
+  verifyToken: String,
   verificationTokenExpiration: Date,
   phone: {
     type: String,

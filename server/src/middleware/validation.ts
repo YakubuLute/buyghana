@@ -221,3 +221,12 @@ export const validateVerifyOTP: ValidationChain[] = [
       return true
     })
 ]
+
+export const verifyResentOTP: ValidationChain[] = [
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Email is required and must be a valid email address')
+    .normalizeEmail({ gmail_remove_dots: false })
+    .toLowerCase()
+]
