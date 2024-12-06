@@ -52,4 +52,6 @@ router.post(
 router.post('/resend-otp', verifyResentOTP, handleValidation, resendOTP)
 // verify token
 router.get('/verify-token', verifyToken)
+
+
 export default router
