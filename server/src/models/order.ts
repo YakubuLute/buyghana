@@ -5,7 +5,11 @@ import { OrderStatusEnum } from '../enums/enums'
 const orderSchema = new Schema<IOrder>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   shippingAddress: { type: String, required: true },
-  orderItems: { type: [Schema.Types.ObjectId], ref: 'OrderItem', required: true },
+  orderItems: {
+    type: [Schema.Types.ObjectId],
+    ref: 'OrderItem',
+    required: true
+  },
   city: { type: String, required: true },
   postalCode: { type: String },
   country: { type: String, required: true },
@@ -24,6 +28,9 @@ const orderSchema = new Schema<IOrder>({
   totalPrice: { type: Number, required: true },
   dateOrdered: { type: Date, default: Date.now }
 })
+
+orderSchema.set('toObject', { virtuals: true })
+orderSchema.set('toJSON', { virtuals: true })
 
 const Order = model<IOrder>('Order', orderSchema)
 

@@ -1,45 +1,56 @@
 import express from 'express'
-import { getUserCount, deleteUser } from '../controllers/users'
+import { getUserCount, deleteUser } from '../controllers/admin/users'
+
 import {
   addCategories,
   updateCategories,
-  deleteCategories
-} from '../controllers/categories'
+  deleteCategory
+} from '../controllers/admin/categories'
+
 import {
   getProducts,
-  getProductsCount,
+  productsCount,
   addProducts,
-  editProducts,
-  deleteProduct,
-  deleteProductsImages
+  editProduct,
+  deleteProduct
 } from '../controllers/product'
+
 import {
-  getOrder,
+  getOrders,
   getOrdersCount,
   changeOrderStatus
-} from '../controllers/orders'
+} from '../controllers/admin/orders'
 
 const router = express.Router()
 
 // USERS
-router.get('/users/count', getUserCount)
-router.delete('/users/:id', deleteUser)
+router.get('/users/count', getUserCount as express.RequestHandler)
+router.delete('/users/:id', deleteUser as express.RequestHandler)
 
 // CATEGORIES
-router.post('/categories', addCategories)
-router.put('/categories/:id', updateCategories)
-router.delete('/categories/:id', deleteCategories)
+router.post('/categories', addCategories as express.RequestHandler)
+router.put('/categories/:id', updateCategories as express.RequestHandler)
+router.delete(
+  '/categories/:id',
+  deleteCategory as unknown as express.RequestHandler
+)
 
 // PRODUCTS
-router.get('/products/count', getProductsCount)
-router.put('/products/', addProducts)
-router.put('/products/:id', editProducts)
-router.delete('/products/:id/images', deleteProductsImages)
-router.delete('/products/:id', deleteProduct)
+router.get('/products/count', productsCount as express.RequestHandler)
+router.put('/products/', addProducts as express.RequestHandler)
+router.put('/products/:id', editProduct as express.RequestHandler)
+// router.delete(
+//   '/products/:id/images',
+//   deleteProductsImages as express.RequestHandler
+// )
+router.delete('/products/:id', deleteProduct as express.RequestHandler)
 
 // ORDERS
-router.get('/orders', getOrder)
-router.get('/orders/count', getOrdersCount)
-router.put('/orders/:id', changeOrderStatus)
+router.get('/orders', getOrders as unknown as express.RequestHandler)
+router.get('/orders/count', getOrdersCount as unknown as express.RequestHandler)
+router.put(
+  '/orders/:id',
+  changeOrderStatus as unknown as express.RequestHandler
+)
 
 export default router

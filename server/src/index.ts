@@ -24,7 +24,7 @@ app.use(bodyParser.json())
 app.use(morgan('tiny'))
 app.use(cors())
 app.use(authJwt())
-app.use(errorHandler)
+app.use(errorHandler as express.ErrorRequestHandler)
 
 // Global error handler
 app.use((err: any, req: any, res: any, next: any) => {
@@ -39,6 +39,10 @@ mainRouter.use(API_PREFIX, authRouter)
 mainRouter.use(API_PREFIX, productRouter)
 mainRouter.use(API_PREFIX, usersRouter)
 mainRouter.use(API_PREFIX, adminRouter)
+
+// accessing static files 
+// app.use('/public/uploads', express.static(__dirname + '/public/uploads'))
+app.use('/public', express.static(__dirname + '/public'))
 
 app.use(mainRouter)
 

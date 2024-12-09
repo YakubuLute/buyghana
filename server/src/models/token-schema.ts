@@ -24,4 +24,7 @@ export const tokenSchema = new Schema<ITokenSchema>({
   }
 })
 
+tokenSchema.set('toObject', { virtuals: true })
+tokenSchema.set('toJSON', { virtuals: true })
+
 export const Token = model<ITokenSchema>('Token', tokenSchema)

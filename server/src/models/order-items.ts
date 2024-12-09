@@ -9,7 +9,9 @@ const orderItemSchema = new Schema<IOrderItem>({
   productPrice: { type: Number, required: true },
   productName: { type: String, required: true },
   productImage: { type: String, required: true }
-  
+
 })
 
+orderItemSchema.set('toObject', { virtuals: true })
+orderItemSchema.set('toJSON', { virtuals: true })
 export const OrderItem = model<IOrderItem>('OrderItem', orderItemSchema)

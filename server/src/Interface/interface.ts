@@ -46,6 +46,7 @@ export interface IUser extends Document {
   country?: string
   createdAt: Date
   updatedAt?: Date
+  cart: ICartProduct[]
 }
 
 export interface ITokenSchema extends Document {
@@ -68,7 +69,7 @@ export interface ICategory extends Document {
 }
 export interface IOrder extends Document {
   user: Schema.Types.ObjectId
-  orderItems: Schema.Types.ObjectId[]
+  orderItems: IOrderItem[]
   shippingAddress: string
   city: string
   postalCode?: string
@@ -91,18 +92,38 @@ export interface IOrderItem extends Document {
 }
 
 export interface IProduct extends Document {
-  name: string;
-  description: string;
-  price: number;
-  quantity: number;
-  image: string;
-  category: Schema.Types.ObjectId;
-  genderCategory: string;
-  countInStock: number;
-  sizes: string[];
-  colors: string[];
-  rating: number;
-  numberOfReviews: number;
-  dateAdded: Date;
-  reviews: Schema.Types.ObjectId[];
+  name: string
+  description: string
+  price: number
+  quantity: number
+  image: string
+  category: Schema.Types.ObjectId
+  genderCategory: string
+  countInStock: number
+  sizes: string[]
+  colors: string[]
+  rating: number
+  numberOfReviews: number
+  dateAdded: Date
+  reviews: Schema.Types.ObjectId[]
+}
+
+export interface ICartProduct extends Document {
+  product: Schema.Types.ObjectId
+  quantity: number
+  selectedSize?: string
+  selectedColor?: string
+  productPrice: number
+  productName: string
+  productImage: string
+  reservationExpiry: Date
+  reserved: boolean
+}
+
+export interface IReview extends Document {
+  user: Schema.Types.ObjectId
+  userName: string
+  date: Date
+  rating: number
+  comment: string
 }

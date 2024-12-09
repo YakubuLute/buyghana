@@ -1,9 +1,9 @@
-import express, { Express } from 'express'
+import express, { Request, Response } from 'express'
 import { getUserById, getUsers, updateUser } from '../controllers/users'
 const router = express.Router()
 
-router.get('/', getUsers)
-router.get('/:id', getUserById)
-router.put('/:id', updateUser)
+router.get('/', getUsers as express.RequestHandler)
+router.get('/:id', getUserById as express.RequestHandler)
+router.put('/:id', updateUser as express.RequestHandler)
 
 export default router

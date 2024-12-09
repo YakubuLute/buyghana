@@ -27,6 +27,12 @@ const userSchema = new Schema<IUser>({
   resetPasswordOTPExpires: {
     type: Date
   },
+  cart: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'CartProduct'
+    }
+  ],
   resetPasswordToken: String,
   resetPasswordTokenExpiration: Date,
   isVerified: {
@@ -79,6 +85,10 @@ const userSchema = new Schema<IUser>({
 
 // Index for email uniqueness
 userSchema.index({ email: 1 }, { unique: true })
+
+// to make id field available in the response
+userSchema.set('toObject', { virtuals: true })
+userSchema.set('toJSON', { virtuals: true })
 
 // Create and export the model
 const User = model<IUser>('User', userSchema)

@@ -18,4 +18,22 @@ const productSchema = new Schema({
   dateAdded: { type: Date, default: Date.now }
 })
 
+productSchema.pre('save', async function (next) {
+  if (this.reviews.length > 0) {
+    await this.populate('reviews')
+    const totalRating =
+      this.reviews.reduce((acc, review) => acc + review?.rating, 0) /
+      this.reviews.length
+    this.rating = parseFloat(totalRating.toFixed(1))
+    this.numberOfReviews = this.reviews.length
+  }
+  next()
+})
+
+// text search index for product name and description 
+productSchema.index({ name: 'text', description: 'text' })
+productSchema.set('toObject', { virtuals: true })
+productSchema.set('toJSON', { virtuals: true })
+
+
 export const Product = model<IProduct>('Product', productSchema)
