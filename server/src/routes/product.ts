@@ -4,7 +4,7 @@ import {
   editProduct,
   getProductDetails,
   productsCount
-} from '../controllers/product'
+} from '../controllers/admin/product'
 
 const router = express.Router()
 

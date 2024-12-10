@@ -42,7 +42,7 @@ export const upload = multer({
 
 export const deleteImages = async (
   imageUrls: string[],
-  continueOnErrorName: any
+  continueOnErrorName?: any
 ) => {
   await Promise.all(
     imageUrls.map(async imageUrl => {

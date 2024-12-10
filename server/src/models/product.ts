@@ -7,7 +7,7 @@ const productSchema = new Schema({
   price: { type: Number, required: true },
   rating: { type: Number, default: 0, required: true },
   colors: { type: [String] },
-  image: { type: String, required: true },
+  image: { type: [String], required: true },
   reviews: { type: [Schema.Types.ObjectId], ref: 'Review' },
   numberOfReviews: { type: Number, default: 0 },
   sizes: { type: [String] },
@@ -30,10 +30,9 @@ productSchema.pre('save', async function (next) {
   next()
 })
 
-// text search index for product name and description 
+// text search index for product name and description
 productSchema.index({ name: 'text', description: 'text' })
 productSchema.set('toObject', { virtuals: true })
 productSchema.set('toJSON', { virtuals: true })
-
 
 export const Product = model<IProduct>('Product', productSchema)

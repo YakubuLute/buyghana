@@ -9,5 +9,7 @@ export enum OrderStatusEnum {
   OutForDelivery = 'out-for-delivery',
   OnHold = 'on-hold',
   PendingPayment = 'pending-payment',
-  PaymentFailed = 'payment-failed'
+  PaymentFailed = 'payment-failed',
+  Returned = 'returned',
+  Failed = 'failed'
 }

@@ -96,7 +96,7 @@ export interface IProduct extends Document {
   description: string
   price: number
   quantity: number
-  image: string
+  image: string[]
   category: Schema.Types.ObjectId
   genderCategory: string
   countInStock: number
