@@ -6,6 +6,7 @@ import { deleteImages, upload } from '../../utils/media-utils'
 import Category from '../../models/category'
 import mongoose, { mongo } from 'mongoose'
 import { Review } from '../../models/review'
+import { IProduct } from '../../Interface/interface'
 
 // add product controller
 export const addProducts = async (req: Request, res: Response) => {
@@ -166,9 +167,83 @@ export const editProduct = async (req: Request, res: Response) => {
 }
 
 // get products controller
-
 export const getProducts = async (req: Request, res: Response) => {
-  // ...
+  try {
+    const page = req.query.page ? parseInt(req.query.page as string) : 1
+    const pageSize = req.query.pageSize
+      ? parseInt(req.query.pageSize as string)
+      : 10
+    let products: IProduct[] = []
+
+    // this is a typical example of
+    // how a client can request products
+    // https://localhost:3000/api/admin/products?page=1&pageSize=10&criteria=newArrivals
+    if (req.query.criteria) {
+      let query = {} as any
+      if (req.query.category) {
+        query['category'] = req.query.category
+      }
+      switch (req.query.criteria) {
+        case 'newArrivals': {
+          const twoWeeksAgo = new Date()
+          twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
+          query['createdAt'] = { $gte: twoWeeksAgo }
+          break
+        }
+
+        case 'bestSellers': {
+          query['sold'] = { $gte: 10 }
+          break
+        }
+        case 'featured': {
+          query['featured'] = true
+          break
+        }
+        case 'topRated': {
+          query['rating'] = { $gte: 4.5 }
+          break
+        }
+        case 'popular': {
+          query['rating'] = { $gte: 10 }
+          break
+        }
+        default: {
+          break
+        }
+      }
+      products = await Product.find(query)
+        .select('-reviews -image -size')
+        .skip((page - 1) * pageSize)
+        .limit(pageSize)
+
+      if (!products) {
+        return res.status(404).json({ message: 'No products found' })
+      }
+    } else if (req.query.category) {
+      products = await Product.find({ category: req.query.category })
+        .select('-reviews -rating')
+        .skip((page - 1) * pageSize)
+        .limit(pageSize)
+      if (!products) {
+        return res.status(404).json({ message: 'No products found' })
+      }
+    } else {
+      products = await Product.find()
+        .select('-reviews -rating')
+        .skip((page - 1) * pageSize)
+        .limit(pageSize)
+      if (!products) {
+        return res.status(404).json({ message: 'No products found' })
+      }
+    }
+
+    res.status(200).json({
+      message: 'Products fetched successfully',
+      data: products
+    })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 // delete product images controller
@@ -190,21 +265,23 @@ export const deleteProductsImages = async (req: Request, res: Response) => {
     // call delete multer function
     await deleteImages(deletedImageUrl)
 
-    // check if deletedImageUrl is in the product images array
+    // query product
     const product = await Product.findById(productId)
     if (!product) {
       return res.status(404).json({ message: 'Product not found' })
     }
 
-    product.image = product?.image?.filter((image: string) => {
+    // filter out the deleted images from the product images array
+    product.images = product?.images?.filter((image: string) => {
       return !deletedImageUrl.includes(image)
     })
 
     // save product
     await product.save()
 
+    // return the product with the updated images as a response
     res
-      .status(200)
+      .status(204)
       .json({ message: 'Product image deleted successfully', data: product })
   } catch (error: any) {
     console.error('Error deleting product image', error)
@@ -240,12 +317,11 @@ export const deleteProduct = async (req: Request, res: Response) => {
     // delete product
     await Product.findByIdAndDelete(productId)
 
-    res.status(200).json({ message: 'Product deleted successfully' })
+    res.status(204).json({ message: 'Product deleted successfully' })
   } catch (error: any) {
     res.status(500).json({ message: error.message, error: error })
   }
 }
-
 
 export const getProductDetails = async (req: Request, res: Response) => {}
 

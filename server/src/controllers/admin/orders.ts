@@ -51,9 +51,11 @@ export const getOrdersCount = async (req: Request, res: Response) => {
 export const changeOrderStatus = async (req: Request, res: Response) => {
   const status = req.body.status
   const orderId = req.params.id
+  if (!orderId || !status) {
+    return res.status(400).json({ message: 'Order id and status are required' })
+  }
   try {
     let order = await Order.findById<any>(orderId)
-
     // if order not found
     if (!order) {
       return res.status(404).json({ message: 'Order not found' })
@@ -79,6 +81,9 @@ export const changeOrderStatus = async (req: Request, res: Response) => {
 
 export const deleteOrder = async (req: Request, res: Response) => {
   try {
+    if (!req.params.id) {
+      return res.status(400).json({ message: 'Order id is required' })
+    }
     const order = await Order.findByIdAndDelete(req.params.id)
     if (!order) {
       return res.status(404).json({ message: 'Order not found' })

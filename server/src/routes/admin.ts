@@ -39,8 +39,8 @@ router.delete(
 
 // product router
 router.get('/products', getProducts as express.RequestHandler)
+router.put('/products/', addProducts as express.RequestHandler)
 router.get('/products/count', productsCount as express.RequestHandler)
-router.put('/products/add', addProducts as express.RequestHandler)
 router.put('/products/:id', editProduct as express.RequestHandler)
 router.delete(
   '/products/:id/images',
