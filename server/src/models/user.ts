@@ -24,6 +24,10 @@ const userSchema = new Schema<IUser>({
   resetPasswordOTP: {
     type: Number
   },
+  paymentCustomerId: {
+    type: String,
+    nullable: true
+  },
   resetPasswordOTPExpires: {
     type: Date
   },

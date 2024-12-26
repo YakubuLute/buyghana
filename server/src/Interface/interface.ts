@@ -33,6 +33,7 @@ export interface IUser extends Document {
   resetPasswordToken?: string
   resetPasswordTokenExpiration?: Date
   isVerified: boolean
+  paymentCustomerId?: string
   wishlist: IWishlistItem[]
   accountVerificationOTP?: string
   accountVerificationOTPExpiration?: Date
@@ -84,6 +85,7 @@ export interface IOrder extends Document {
 export interface IOrderItem extends Document {
   product: Schema.Types.ObjectId
   quantity: number
+  cartProductId?: string
   selectedSize?: string
   selectedColor?: string
   productPrice: number

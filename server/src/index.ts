@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 import morgan from 'morgan'
@@ -12,7 +12,9 @@ import { authJwt } from './middleware/jwt'
 import { errorHandler } from './middleware/error-handler'
 import { cronJobs } from './utils/cron-jobs'
 import categoriesRouter from './routes/categories'
+import checkOutRouter from './routes/checkout'
 import productsRouter from './routes/products'
+import { authorizePostRequest } from './middleware/authorization'
 // env configuration
 dotenv.config()
 
@@ -23,16 +25,18 @@ const ADMIN_ROUTE = process.env.API_PREFIX + '/admin' || ''
 const USERS_ROUTE = process.env.API_PREFIX + '/users' || ''
 const CATEGORIIES_ROUTE = process.env.API_PREFIX + '/categories' || ''
 const PRODUCTS_ROUTE = process.env.API_PREFIX + '/products' || ''
+const CHECK_OUT_ROUTE = process.env.API_PREFIX + '/checkout' || ''
 
 // middleware configuration
 app.use(bodyParser.json())
 app.use(morgan('tiny'))
 app.use(cors())
 app.use(authJwt())
+app.use(authorizePostRequest)
 app.use(errorHandler as express.ErrorRequestHandler)
 
 // Global error handler
-app.use((err: any, req: any, res: any, next: any) => {
+app.use((err: any, req: Request, res: Response, next: any) => {
   console.error(err.stack)
   res.status(500).send('Something went wrong!')
 })
@@ -45,6 +49,7 @@ mainRouter.use(USERS_ROUTE, usersRouter)
 mainRouter.use(ADMIN_ROUTE, adminRouter)
 mainRouter.use(CATEGORIIES_ROUTE, categoriesRouter)
 mainRouter.use(PRODUCTS_ROUTE, productsRouter)
+mainRouter.use(CHECK_OUT_ROUTE, checkOutRouter)
 
 // accessing static files
 // app.use('/public/uploads', express.static(__dirname + '/public/uploads'))
