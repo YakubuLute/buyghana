@@ -1,6 +1,7 @@
-import { model, Schema } from 'mongoose'
+import { model, Schema, Document } from 'mongoose'
+import { IUser } from '../Interface/interface'
 
-const userSchema = new Schema({
+const userSchema = new Schema<IUser>({
   name: {
     type: String,
     required: true,
@@ -23,9 +24,19 @@ const userSchema = new Schema({
   resetPasswordOTP: {
     type: Number
   },
+  paymentCustomerId: {
+    type: String,
+    nullable: true
+  },
   resetPasswordOTPExpires: {
     type: Date
   },
+  cart: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'CartProduct'
+    }
+  ],
   resetPasswordToken: String,
   resetPasswordTokenExpiration: Date,
   isVerified: {
@@ -53,7 +64,9 @@ const userSchema = new Schema({
       }
     }
   ],
-  verificationToken: String,
+  accountVerificationOTP: String,
+  accountVerificationOTPExpiration: Date,
+  verifyToken: String,
   verificationTokenExpiration: Date,
   phone: {
     type: String,
@@ -74,6 +87,13 @@ const userSchema = new Schema({
   }
 })
 
+// Index for email uniqueness
 userSchema.index({ email: 1 }, { unique: true })
 
-exports.User = model('User', userSchema)
+// to make id field available in the response
+userSchema.set('toObject', { virtuals: true })
+userSchema.set('toJSON', { virtuals: true })
+
+// Create and export the model
+const User = model<IUser>('User', userSchema)
+export default User

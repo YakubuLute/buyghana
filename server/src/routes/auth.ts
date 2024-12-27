@@ -1,18 +1,57 @@
-import express, { Request, Response } from 'express'
+// routes/auth.ts
+import express from 'express'
 import {
   register,
   login,
   forgotPassword,
   verifyPasswordResetOTP,
-  resetPassword
+  resetPassword,
+  verifyOTP,
+  verifyToken
 } from '../controllers/auth'
+import {
+  validateUser,
+  validateForgotPassword,
+  validateVerifyOTP,
+  validatePasswordReset,
+  validateLogin,
+  verifyResentOTP
+} from '../middleware/validation'
+import { handleValidation } from '../middleware/validation-handler'
+import { resendOTP } from '../controllers/otp-controller'
 
-const router = express.Router();
+const router = express.Router()
 
-router.post('/login', login)
-router.post('/register', register)
-router.post('/forgot-password', forgotPassword)
-router.post('/verify-otp', verifyPasswordResetOTP)
-router.post('/reset-password', resetPassword)
+router.post('/register', validateUser, handleValidation, register)
+router.post('/login', validateLogin, handleValidation, login)
+router.post(
+  '/forgot-password',
+  validateForgotPassword,
+  handleValidation,
+  forgotPassword
+)
+router.post('/verify-otp', validateVerifyOTP, handleValidation, verifyOTP)
+
+// password reset OTP route
+router.post(
+  '/verify-password-reset-otp',
+  validateVerifyOTP,
+  handleValidation,
+  verifyPasswordResetOTP
+)
+
+// password reset route
+router.post(
+  '/reset-password',
+  validatePasswordReset,
+  handleValidation,
+  resetPassword
+)
+
+// OTP verification route
+router.post('/resend-otp', verifyResentOTP, handleValidation, resendOTP)
+// verify token
+router.get('/verify-token', verifyToken)
+
 
 export default router
