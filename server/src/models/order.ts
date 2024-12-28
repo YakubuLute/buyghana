@@ -25,6 +25,12 @@ const orderSchema = new Schema<IOrder>({
     required: true,
     default: [OrderStatusEnum.Pending]
   },
+  status: {
+    type: String,
+    enum: OrderStatusEnum,
+    required: false,
+    default: OrderStatusEnum.Pending
+  },
   totalPrice: { type: Number, required: true },
   dateOrdered: { type: Date, default: Date.now }
 })

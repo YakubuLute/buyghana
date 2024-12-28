@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { IOrder } from '../Interface/interface'
 import User from '../models/user'
 import Order from '../models/order'
@@ -65,7 +65,7 @@ export const addOrder = async (orderData: IOrder) => {
       await user.save({ session })
     }
     orderData['orderItems'] = orderItemsId as any
-    let order = new Order(orderData) as any
+    let order = new Order(orderData)
     order.status = 'processed'
     order.statusHistory.push('processed')
 
@@ -81,5 +81,74 @@ export const addOrder = async (orderData: IOrder) => {
     return console.trace('Error adding order', error)
   } finally {
     await session.endSession()
+  }
+}
+
+export const getUserOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.params.userId
+    if (!userId)
+      return res
+        .status(400)
+        .json({ message: 'userId as a query param is required' })
+    const orders = await Order.find({ user: userId })
+      .select('orderItem status totalPrice dateOrdered')
+      .populate({ path: 'orderItems', select: 'orderName productImage' })
+      .sort({ dateOrdered: -1 })
+
+    if (!orders) res.status(404).json({ message: 'Order not found' })
+
+    const completed: IOrder[] = []
+    const active: IOrder[] = []
+    const cancelled: IOrder[] = []
+
+    for (const order of orders) {
+      if (order.status === 'delivered') {
+        completed.push(order)
+      } else if (['cancelled', 'expired'].includes(order.status)) {
+        cancelled.push(order)
+      } else {
+        active.push(order)
+      }
+    }
+    return res.json({ total: orders.length, completed, active, cancelled })
+  } catch (error) {
+    console.error(error)
+    next(error)
+    return res
+      .status(500)
+      .json({ message: 'Internal server error', error: error })
+  }
+}
+
+export const getOrderById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = req.params.id
+    if (!id)
+      return res
+        .status(400)
+        .json({ message: 'id as a query param is required' })
+
+    const order = await Order.findById(id)
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' })
+    }
+    return res
+      .status(200)
+      .json({ message: 'Order retrieved seccussfully', data: order })
+  } catch (error) {
+    console.error(error)
+    next(error)
+    return res
+      .status(500)
+      .json({ message: 'Internal server error', error: error })
   }
 }

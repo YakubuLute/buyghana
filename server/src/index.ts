@@ -14,6 +14,7 @@ import { cronJobs } from './utils/cron-jobs'
 import categoriesRouter from './routes/categories'
 import checkOutRouter from './routes/checkout'
 import productsRouter from './routes/products'
+import orderRouter from './routes/order'
 import { authorizePostRequest } from './middleware/authorization'
 // env configuration
 dotenv.config()
@@ -26,6 +27,7 @@ const USERS_ROUTE = process.env.API_PREFIX + '/users' || ''
 const CATEGORIIES_ROUTE = process.env.API_PREFIX + '/categories' || ''
 const PRODUCTS_ROUTE = process.env.API_PREFIX + '/products' || ''
 const CHECK_OUT_ROUTE = process.env.API_PREFIX + '/checkout' || ''
+const ORDER_ROUTE = process.env.API_PREFIX + '/order' || ''
 
 // middleware configuration
 app.use(bodyParser.json())
@@ -50,6 +52,7 @@ mainRouter.use(ADMIN_ROUTE, adminRouter)
 mainRouter.use(CATEGORIIES_ROUTE, categoriesRouter)
 mainRouter.use(PRODUCTS_ROUTE, productsRouter)
 mainRouter.use(CHECK_OUT_ROUTE, checkOutRouter)
+mainRouter.use(ORDER_ROUTE, orderRouter)
 
 // accessing static files
 // app.use('/public/uploads', express.static(__dirname + '/public/uploads'))

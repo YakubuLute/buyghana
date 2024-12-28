@@ -78,6 +78,7 @@ export interface IOrder extends Document {
   phone: string
   paymentId: string
   statusHistory: string[]
+  status: string
   totalPrice: number
   dateOrdered: Date
 }
