@@ -1,0 +1,8 @@
+{
+  "productId": "Test String",
+  "productName": "Test String",
+  "productImage": "Test String",
+  "productPrice": 1.0,
+  "productExists": true,
+  "productOutOfStock": true
+}

@@ -21,7 +21,7 @@ const router = express.Router()
 router.get('/', getUsers as express.RequestHandler)
 router.get('/:id', getUserById as express.RequestHandler)
 router.put('/:id', updateUser as express.RequestHandler)
-
+// TODO: Add getPaymentProfile controller router.get('/:id/paymentProfile', getPaymentProfile as express.RequestHandler)
 // wishlist routes
 router.get('/:id/wishlist', getUserWishlist as express.RequestHandler)
 router.post('/:id/wishlist', addToWishlist as express.RequestHandler)
@@ -31,9 +31,9 @@ router.delete(
 )
 
 // cart routes
-router.get('/:id/cart', getUserCart as express.RequestHandler)
 router.post('/:id/cart', addToCart as express.RequestHandler)
-router.delete('/:id/cart/:productId', removeFromCart as express.RequestHandler)
+router.get('/:id/cart', getUserCart as express.RequestHandler)
+router.get('/:id/cart/:cartProductId', getCartProductById as express.RequestHandler)
 router.get(
   '/:id/cart/:cartProductId',
   getCartProductById as express.RequestHandler

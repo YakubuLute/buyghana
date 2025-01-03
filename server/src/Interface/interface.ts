@@ -4,6 +4,7 @@ import { Document, Schema } from 'mongoose'
 export interface CustomError extends Error {
   code?: number
   keyPattern?: { [key: string]: number }
+  message: string
 }
 
 // TokenPayload interface implementation

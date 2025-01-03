@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express'
+import express from 'express'
 import { getOrderById, getUserOrder } from '../controllers/orders'
 
 const router = express.Router()
