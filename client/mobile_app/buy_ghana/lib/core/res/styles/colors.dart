@@ -1,7 +1,7 @@
 import 'package:bug_ghana/core/utils/core_utils.dart';
 import 'package:flutter/material.dart';
 
-abstract class Colors {
+abstract class CustomColors {
   static const Color lightThemePrimaryTint = Color(0xff9e9cdc);
   static const Color lightThemeSecondaryTint = Color(0xff673ab7);
 
