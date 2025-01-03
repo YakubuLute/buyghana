@@ -1,0 +1,321 @@
+{
+    item: {
+        id: 'li_1OZWmmFunbcP9QaIcKIfYS3F',
+        object: 'item',
+        amount_discount: 0,
+        amount_subtotal: 99998,
+        amount_tax: 0,
+        amount_total: 99998,
+        currency: 'usd',
+        description: 'Nike Truman',
+        price: {
+          id: 'price_1OZWmmFunbcP9QaIi6T1pyru',
+          object: 'price',
+          active: false,
+          billing_scheme: 'per_unit',
+          created: 1705488956,
+          currency: 'usd',
+          custom_unit_amount: null,
+          livemode: false,
+          lookup_key: null,
+          metadata: {},
+          nickname: null, 
+          product: {
+            id: 'prod_POJPUp1E6MiLzY',
+            object: 'product',
+            active: false,
+            attributes: [ [length]: 0 ],
+            created: 1705488956,
+            default_price: null,
+            description: null,
+            features: [ [length]: 0 ],
+            images: [
+              'https://img.freepik.com/free-psd/isolated-cardboard-box_125540-1169.jpg?w=1060&t=st=1705342136~exp=1705342736~hmac=3b4449a587dd227ed0f2d66f0c0eca550f75a79dc0b19284d8624b4a91f66f6a',
+              [length]: 1
+            ],
+            livemode: false,
+            metadata: {
+              cartProductId: '65a453b6329b3b6cc311cab3',
+              selectedColour: '#1ac933',
+              selectedSize: '41'
+            },
+            name: 'Nike Truman',
+            package_dimensions: null,
+            shippable: null,
+            statement_descriptor: null,
+            tax_code: null,
+            type: 'service',
+            unit_label: null,
+            updated: 1705488956,
+            url: null
+          },
+          recurring: null,
+          tax_behavior: 'unspecified',
+          tiers_mode: null,
+          transform_quantity: null,
+          type: 'one_time',
+          unit_amount: 49999,
+          unit_amount_decimal: '49999'
+        },
+        quantity: 2
+      }
+      item: {
+        id: 'li_1OZWmmFunbcP9QaIz7a3p6lv',
+        object: 'item',
+        amount_discount: 0,
+        amount_subtotal: 2599,
+        amount_tax: 0,
+        amount_total: 2599,
+        currency: 'usd',
+        description: 'Breathable t-shirt',
+        price: {
+          id: 'price_1OZWmmFunbcP9QaIEYTijGiu',
+          object: 'price',
+          active: false,
+          billing_scheme: 'per_unit',
+          created: 1705488956,
+          currency: 'usd',
+          custom_unit_amount: null,
+          livemode: false,
+          lookup_key: null,
+          metadata: {},
+          nickname: null,
+          product: {
+            id: 'prod_POJP8ZsqxCm4ZC',
+            object: 'product',
+            active: false,
+            attributes: [ [length]: 0 ],
+            created: 1705488956,
+            default_price: null,
+            description: null,
+            features: [ [length]: 0 ],
+            images: [
+              'https://img.freepik.com/free-psd/isolated-cardboard-box_125540-1169.jpg?w=1060&t=st=1705342136~exp=1705342736~hmac=3b4449a587dd227ed0f2d66f0c0eca550f75a79dc0b19284d8624b4a91f66f6a',
+              [length]: 1
+            ],
+            livemode: false,
+            metadata: {
+              cartProductId: '65a453c8329b3b6cc311cacc',
+              selectedColour: '#c74a33',
+              selectedSize: 'L'
+            },
+            name: 'Breathable t-shirt',
+            package_dimensions: null,
+            shippable: null,
+            statement_descriptor: null,
+            tax_code: null,
+            type: 'service',
+            unit_label: null,
+            updated: 1705488956,
+            url: null
+          },
+          recurring: null,
+          tax_behavior: 'unspecified',
+          tiers_mode: null,
+          transform_quantity: null,
+          type: 'one_time',
+          unit_amount: 2599,
+          unit_amount_decimal: '2599'
+        },
+        quantity: 1
+      }
+      item: {
+        id: 'li_1OZWmmFunbcP9QaImvMp8gk9',
+        object: 'item',
+        amount_discount: 0,
+        amount_subtotal: 49999,
+        amount_tax: 0,
+        amount_total: 49999,
+        currency: 'usd',
+        description: 'Nike Truman',
+        price: {
+          id: 'price_1OZWmmFunbcP9QaInZqMyEC9',
+          object: 'price',
+          active: false,
+          billing_scheme: 'per_unit',
+          created: 1705488956,
+          currency: 'usd',
+          custom_unit_amount: null,
+          livemode: false,
+          lookup_key: null,
+          metadata: {},
+          nickname: null,
+          product: {
+            id: 'prod_POJPnHD4R0otXF',
+            object: 'product',
+            active: false,
+            attributes: [ [length]: 0 ],
+            created: 1705488956,
+            default_price: null,
+            description: null,
+            features: [ [length]: 0 ],
+            images: [
+              'https://img.freepik.com/free-psd/isolated-cardboard-box_125540-1169.jpg?w=1060&t=st=1705342136~exp=1705342736~hmac=3b4449a587dd227ed0f2d66f0c0eca550f75a79dc0b19284d8624b4a91f66f6a',
+              [length]: 1
+            ],
+            livemode: false,
+            metadata: {
+              cartProductId: '65a453d1329b3b6cc311cae5',
+              selectedColour: '#b52ca9',
+              selectedSize: '43'
+            },
+            name: 'Nike Truman',
+            package_dimensions: null,
+            shippable: null,
+            statement_descriptor: null,
+            tax_code: null,
+            type: 'service',
+            unit_label: null,
+            updated: 1705488956,
+            url: null
+          },
+          recurring: null,
+          tax_behavior: 'unspecified',
+          tiers_mode: null,
+          transform_quantity: null,
+          type: 'one_time',
+          unit_amount: 49999,
+          unit_amount_decimal: '49999'
+        },
+        quantity: 1
+      }
+      --------------------------------------
+      --------------------------------------
+      CUSTOMER:  {
+        id: 'cus_POJPoKKoz1gmbz',
+        object: 'customer',
+        address: null,
+        balance: 0,
+        created: 1705488954,
+        currency: null,
+        default_source: null,
+        delinquent: false,
+        description: null,
+        discount: null,
+        email: 'sdfasdf@asdfe.uy',
+        invoice_prefix: '3D9BF1AB',
+        invoice_settings: {
+          custom_fields: null,
+          default_payment_method: null,
+          footer: null,
+          rendering_options: null
+        },
+        livemode: false,
+        metadata: { userId: '655716828bec5bc02e8d0421' },
+        name: null,
+        next_invoice_sequence: 1,
+        phone: '+233231234567',
+        preferred_locales: [],
+        shipping: null,
+        tax_exempt: 'none',
+        test_clock: null
+      }
+      --------------------------------------
+      --------------------------------------
+      SESSION:  {
+        id: 'cs_test_b1nLUuUECfd8ohA8agjPqGXl0xupWhFUp3Y1R3iwreEzpHaaVYxFefzsEb',
+        object: 'checkout.session',
+        after_expiration: null,
+        allow_promotion_codes: null,
+        amount_subtotal: 152596,
+        amount_total: 152596,
+        automatic_tax: { enabled: false, status: null },
+        billing_address_collection: 'auto',
+        cancel_url: 'https://dbestech.biz/cart',
+        client_reference_id: null,
+        client_secret: null,
+        consent: null,
+        consent_collection: null,
+        created: 1705488957,
+        currency: 'usd',
+        currency_conversion: null,
+        custom_fields: [],
+        custom_text: {
+          after_submit: null,
+          shipping_address: null,
+          submit: null,
+          terms_of_service_acceptance: null
+        },
+        customer: 'cus_POJPoKKoz1gmbz',
+        customer_creation: null,
+        customer_details: {
+          address: {
+            city: 'gerge',
+            country: 'GH',
+            line1: 'dfghdf',
+            line2: null,
+            postal_code: null,
+            state: null
+          },
+          email: 'sdfasdf@asdfe.uy',
+          name: 'fghdfg',
+          phone: '+233231234567',
+          tax_exempt: 'none',
+          tax_ids: []
+        },
+        customer_email: null,
+        expires_at: 1705575356,
+        invoice: null,
+        invoice_creation: {
+          enabled: false,
+          invoice_data: {
+            account_tax_ids: null,
+            custom_fields: null,
+            description: null,
+            footer: null,
+            metadata: {},
+            rendering_options: null
+          }
+        },
+        livemode: false,
+        locale: null,
+        metadata: { orderId: '2390f902f' },
+        mode: 'payment',
+        payment_intent: 'pi_3OZWnNFunbcP9QaI1ONaHQRh',
+        payment_link: null,
+        payment_method_collection: 'if_required',
+        payment_method_configuration_details: { id: 'pmc_1OWR3AFunbcP9QaIqvNSH4Lc', parent: null },
+        payment_method_options: {},
+        payment_method_types: [ 'card', 'afterpay_clearpay', 'klarna', 'affirm', 'cashapp' ],
+        payment_status: 'paid',
+        phone_number_collection: { enabled: true },
+        recovered_from: null,
+        setup_intent: null,
+        shipping_address_collection: {
+          allowed_countries: [
+            'AC', 'AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AO', 'AQ',
+            'AR', 'AT', 'AU', 'AW', 'AX', 'AZ', 'BA', 'BB', 'BD', 'BE',
+            'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ',
+            'BR', 'BS', 'BT', 'BV', 'BW', 'BY', 'BZ', 'CA', 'CD', 'CF',
+            'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN', 'CO', 'CR', 'CV',
+            'CW', 'CY', 'CZ', 'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC',
+            'EE', 'EG', 'EH', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FK', 'FO',
+            'FR', 'GA', 'GB', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GL',
+            'GM', 'GN', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GW', 'GY',
+            'HK', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IM', 'IN',
+            ... 137 more items
+          ]
+        },
+        shipping_cost: null,
+        shipping_details: {
+          address: {
+            city: 'gerge',
+            country: 'GH',
+            line1: 'dfghdf',
+            line2: null,
+            postal_code: '',
+            state: ''
+          },
+          name: 'fghdfg'
+        },
+        shipping_options: [],
+        status: 'complete',
+        submit_type: null,
+        subscription: null,
+        success_url: 'https://dbestech.biz/payment-success',
+        total_details: { amount_discount: 0, amount_shipping: 0, amount_tax: 0 },
+        ui_mode: 'hosted',
+        url: null
+      }
+      
+}

@@ -27,7 +27,7 @@ const router = express.Router()
 
 // user router
 router.get('/users/count', getUserCount as express.RequestHandler)
-router.delete('/users/:id', deleteUser as express.RequestHandler)
+router.delete('/users/:id', deleteUser as any as express.RequestHandler)
 
 // category router
 router.post('/categories', addCategories as express.RequestHandler)

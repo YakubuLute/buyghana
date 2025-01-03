@@ -1,0 +1,16 @@
+{
+  "id": "Test String",
+  "name": "Test String",
+  "description": "Test String",
+  "price": 1.0,
+  "rating": 1.0,
+  "colours": [],
+  "image": "Test String",
+  "images": [],
+  "reviewIds": [],
+  "numberOfReviews": 1,
+  "sizes": [],
+  "category": "Test String",
+  "genderAgeCategory": "Test String",
+  "countInStock": 1
+}

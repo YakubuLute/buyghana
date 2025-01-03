@@ -7,58 +7,67 @@ import Order from '../../models/order'
 import { OrderItem } from '../../models/order-items'
 import { CartProduct } from '../../models/cart-products'
 import { Token } from '../../models/token-schema'
+import { CustomError } from '../../Interface/interface'
 
 export const getUserCount = async (req: Request, res: Response) => {
   try {
     const userCount = await User.countDocuments()
     if (!userCount) {
-      res.status(404).json({ message: 'No users found' })
-      return
+      return res.status(500).json({ message: 'Could not count users' })
     }
+
     res
       .status(200)
       .json({ message: 'User count fetched successfully', data: userCount })
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error: error })
+  } catch (err: any) {
+    return res
+      .status(500)
+      .json({ type: err.name, message: err.message || 'Internal Server Error' })
   }
 }
 
 // delete user
 export const deleteUser = async (req: Request, res: Response) => {
-  const { id } = req.params
   try {
-    const user = await User.findById(id)
-    if (!user) {
-      res.status(404).json({ message: 'User not found' })
-      return
-    }
-    const orders = await Order.find({ user: id })
-    // get order items ids
-    const orderItemsIds = orders.map(order =>
-      order.orderItems.map(item => item.product)
-    )
+    const userId = req.params.id
 
-    // delete order items
-    await OrderItem.deleteMany({ _id: { $in: orderItemsIds } })
-    // delete orders
-    await Order.deleteMany({ user: id })
-    // delete user
-    await User.findByIdAndDelete(id)
-    //cart products
+    const user = await User.findById(userId)
+    if (!user) return res.status(404).json({ message: 'User not found' })
+
+    const orders = await Order.find({ user: userId })
+
+    // Extract order item IDs from all orders
+    const orderItemIds = orders.flatMap(order => order.orderItems)
+
+    // Remove user's cart products
     await CartProduct.deleteMany({ _id: { $in: user.cart } })
 
-    // update the cate data of the user
-    await User.findByIdAndUpdate(id, { $pull: { cart: { $exists: true } } })
+    // Remove references to cart products from the user document
+    await User.findByIdAndUpdate(userId, {
+      $pull: { cartProducts: { $exists: true } }
+    })
 
-    // remove token associated with the user
-    await Token.deleteOne({ user: id })
+    // Remove user's reviews
+    // await Review.deleteMany({ user: userId });
 
-    // finally delete the user
-    await User.deleteOne({ _id: id })
+    // Remove user's orders and associated order items
+    await Order.deleteMany({ user: userId })
 
-    res.status(204).json({ message: 'User deleted successfully' })
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error', error: error })
+    // Remove all order items associated with the user
+    await OrderItem.deleteMany({ _id: { $in: orderItemIds } })
+
+    await Token.deleteOne({ userId: userId })
+
+    // Finally, remove the user
+    const deletedUser = await User.deleteOne({ _id: userId })
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    return res.status(204).end()
+  } catch (err: any) {
+    return res.status(500).json({ type: err.name, message: err.message })
   }
 }
 

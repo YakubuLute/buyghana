@@ -30,9 +30,11 @@ const CHECK_OUT_ROUTE = process.env.API_PREFIX + '/checkout' || ''
 const ORDER_ROUTE = process.env.API_PREFIX + '/order' || ''
 
 // middleware configuration
+app.use(cors())
+app.options('*', cors())
+app.use(`${API_PREFIX}/checkout/webhook`, express.raw({ type: 'application/json' }))
 app.use(bodyParser.json())
 app.use(morgan('tiny'))
-app.use(cors())
 app.use(authJwt())
 app.use(authorizePostRequest)
 app.use(errorHandler as express.ErrorRequestHandler)
@@ -53,6 +55,8 @@ mainRouter.use(CATEGORIIES_ROUTE, categoriesRouter)
 mainRouter.use(PRODUCTS_ROUTE, productsRouter)
 mainRouter.use(CHECK_OUT_ROUTE, checkOutRouter)
 mainRouter.use(ORDER_ROUTE, orderRouter)
+// cron jobs
+cronJobs()
 
 // accessing static files
 // app.use('/public/uploads', express.static(__dirname + '/public/uploads'))
@@ -69,9 +73,6 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
 })
-
-// cron jobs
-cronJobs()
 
 // Connect to MongoDB
 connectDB()
