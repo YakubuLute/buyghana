@@ -20,6 +20,8 @@ export interface IWishlistItem {
   productName: string
   productImage: string
   productPrice: number
+  productExists?: boolean
+  productOutOfStock?: boolean
 }
 
 // Define interface for User document

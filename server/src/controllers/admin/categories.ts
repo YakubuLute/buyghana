@@ -102,16 +102,17 @@ export const deleteCategory = async (req: Request, res: Response) => {
 
 export const updateCategories = async (req: Request, res: Response) => {
   try {
+    const { name, icon, colour } = req.body
     const category = await Category.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      { name, icon, colour },
       { new: true }
     )
     if (!category) {
       return res.status(404).json({ message: 'Category not found' })
     }
-    res.status(200).json(category)
-  } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.json(category)
+  } catch (err: any) {
+    return res.status(500).json({ message: err.message })
   }
 }

@@ -22,6 +22,7 @@ import { resendOTP } from '../controllers/otp-controller'
 
 const router = express.Router()
 
+// auth routes
 router.post('/register', validateUser, handleValidation, register)
 router.post('/login', validateLogin, handleValidation, login)
 router.post(
@@ -51,7 +52,6 @@ router.post(
 // OTP verification route
 router.post('/resend-otp', verifyResentOTP, handleValidation, resendOTP)
 // verify token
-router.get('/verify-token', verifyToken)
-
+router.get('/verify-token', handleValidation, verifyToken as any)
 
 export default router
