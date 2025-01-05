@@ -23,12 +23,11 @@ export const getProducts = async (req: Request, res: Response) => {
           const twoWeeksAgo = new Date()
           twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
 
-          query['createdAt'] = { $gte: twoWeeksAgo }
+          query['dateAdded'] = { $gte: twoWeeksAgo }
           break
         }
-
-        case 'bestSellers': {
-          query['sold'] = { $gte: 10 }
+        case 'popular': {
+          query['rating'] = { $gte: 4.5 }
           break
         }
         case 'featured': {
@@ -36,13 +35,10 @@ export const getProducts = async (req: Request, res: Response) => {
           break
         }
         case 'topRated': {
-          query['rating'] = { $gte: 4.5 }
+          query['rating'] = { $gte: 5.5 }
           break
         }
-        case 'popular': {
-          query['rating'] = { $gte: 10 }
-          break
-        }
+
         default: {
           break
         }
@@ -51,26 +47,21 @@ export const getProducts = async (req: Request, res: Response) => {
         .select('-reviews -image -size')
         .skip((page - 1) * pageSize)
         .limit(pageSize)
-
-      if (!products) {
-        return res.status(404).json({ message: 'No products found' })
-      }
     } else if (req.query.category) {
       products = await Product.find({ category: req.query.category })
-        .select('-reviews -rating')
+        .select('-images -reviews -rating')
         .skip((page - 1) * pageSize)
         .limit(pageSize)
-      if (!products) {
-        return res.status(404).json({ message: 'No products found' })
-      }
     } else {
       products = await Product.find()
-        .select('-reviews -rating')
+        .select('-images -reviews -rating')
         .skip((page - 1) * pageSize)
         .limit(pageSize)
-      if (!products) {
-        return res.status(404).json({ message: 'No products found' })
-      }
+    }
+    if (!products) {
+      return res
+        .status(404)
+        .json({ message: 'No products found for this category' })
     }
 
     res.status(204).json({
@@ -96,53 +87,61 @@ export const getProductsById = async (req: Request, res: Response) => {
       .json({ message: 'Product fetched successfully', data: product })
   } catch (error: any) {
     console.log('Error getting product by id', error)
-    res.status(500).json({ message: error.message })
+    res.status(500).json({
+      message: error.message || 'Error fetching products',
+      error: error
+    })
   }
 }
 
 export const searchProducts = async (req: Request, res: Response) => {
   try {
     const searchTerm = req.query.q as string
+    if (!searchTerm) {
+      return res.status(400).json({ message: 'No search query provided' })
+    }
+
     const page = Number(req.query.page) || 1
     const pageSize = Number(req.query.pageSize) || 10
     const skip = (page - 1) * pageSize
 
-    let searchResult: IProduct[] = []
-    let query = {} as any
+    let query: any = {}
 
+    // Add category filter if provided
     if (req.query.category && typeof req.query.category === 'string') {
-      query = {
-        ...query,
-        category: req.query.category.toLowerCase()
-      }
-    } else if (
+      query.category = req.query.category.toLowerCase()
+    }
+
+    // Add genderAgeCategory filter if provided
+    if (
       req.query.genderAgeCategory &&
       typeof req.query.genderAgeCategory === 'string'
     ) {
-      query = {
-        ...query,
-        genderAgeCategory: req.query.genderAgeCategory.toLowerCase()
-      }
+      query.genderAgeCategory = req.query.genderAgeCategory.toLowerCase()
     }
 
-    if (searchTerm) {
-      query = {
-        ...query,
-        $text: {
-          $search: searchTerm,
-          $language: 'en',
-          $caseSensitive: false
-        }
-      }
+    // Add text search filter
+    query.$text = {
+      $search: searchTerm,
+      $language: 'english',
+      $caseSensitive: false
     }
-    searchResult = await Product.find(query).skip(skip).limit(pageSize)
 
-    res
-      .status(204)
-      .json({ message: 'Products fetched successfully', data: searchResult })
+    // Execute search query with pagination
+    const searchResults = await Product.find(query).skip(skip).limit(pageSize)
+
+    // Send response with status 200
+    res.status(200).json({
+      message: 'Products fetched successfully',
+      data: searchResults
+    })
   } catch (error: any) {
-    console.log('Error searching products', error)
-    res.status(500).json({ message: error.message, error: error })
+    console.error('Error searching products:', error)
+    res.status(500).json({
+      message:
+        error.message ||
+        'Error searching products, try changing your search terms',
+      error: error
+    })
   }
 }
-
