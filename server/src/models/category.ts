@@ -12,8 +12,8 @@ const categorySchema = new Schema<ICategory>({
 })
 
 // to make id field available in the response
-categorySchema.set('toObject', { virtuals: true })
 categorySchema.set('toJSON', { virtuals: true })
+categorySchema.set('toObject', { virtuals: true })
 
 const Category = model<ICategory>('Category', categorySchema)
 export default Category
