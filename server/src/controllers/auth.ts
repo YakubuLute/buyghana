@@ -11,44 +11,45 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password, phone } = req.body
 
-    const existingUser = await User.findOne({ email: email.toLowerCase() })
+    const existingUser = await User.findOne({
+      $or: [{ email: email.toLowerCase() }, { phone }]
+    })
+
     if (existingUser) {
-      res.status(400).json({ error: 'Email already registered' })
+      res.status(400).json({
+        error:
+          existingUser.email === email.toLowerCase()
+            ? 'Email already registered'
+            : 'Phone number already registered'
+      })
       return
     }
 
-    const salt = await bcrypt.genSalt(10)
+    const salt = await bcrypt.genSalt(12)
     const passwordHash = await bcrypt.hash(password, salt)
 
-    // generate OTP of 6 chars and set the OTP expiration time to 3 mins
     const accountVerificationOTP = generateOTP(6)
     const accountVerificationOTPExpiration = new Date(
-      Date.now() + 3 * 60 * 1000
+      Date.now() + 5 * 60 * 1000 // verification expiration time is 5 minutes
     )
 
-    // user object
     const user = new User({
-      name,
-      email: email.toLowerCase(),
+      ...req.body,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
       passwordHash,
-      phone,
+      phone: phone.trim(),
       accountVerificationOTP,
       accountVerificationOTPExpiration,
       isVerified: false
     })
 
-    let savedUser = await user.save()
-    if (!savedUser) {
-      res.status(500).json({
-        error: 'Internal server error',
-        message: 'Could not create a new user'
-      })
-      return
-    }
+    await user.save()
+
     await sendEmail({
       to: email,
       subject: 'Verify Your Account',
-      text: `Your verification code is: ${accountVerificationOTP}`
+      text: `Your verification code is: ${accountVerificationOTP}. Valid for 5 minutes.`
     })
 
     res.status(201).json({
@@ -59,10 +60,18 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     const err = error as CustomError
     if (err.code === 11000) {
-      res.status(400).json({ error: 'Email already registered' })
+      const keyPattern = err.keyPattern
+      const duplicateField = keyPattern && Object.keys(keyPattern)[0]
+      res.status(400).json({
+        error: duplicateField
+          ? `${
+              duplicateField?.charAt(0).toUpperCase() + duplicateField?.slice(1)
+            } already registered`
+          : "There's a duplicate field already registered"
+      })
       return
     }
-    console.error(error)
+    console.error('Registration error:', error)
     res.status(500).json({ error: 'Internal server error' })
   }
 }
@@ -70,26 +79,24 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body
-
-    const user = await User.findOne({ email: email.toLowerCase() })
+    const user = await User.findOne({ email: email.toLowerCase().trim() })
     if (!user) {
-      res.status(401).json({
-        error: 'Invalid credentials',
-        message: 'User with this email do not exist'
-      })
+      // Use consistent error message for security
+      res.status(401).json({ error: 'Invalid credentials' })
       return
     }
 
     const isValidPassword = await bcrypt.compare(password, user.passwordHash)
     if (!isValidPassword) {
-      res
-        .status(401)
-        .json({ error: 'Invalid credentials', message: 'Invalid password' })
+      res.status(401).json({ error: 'Invalid credentials' })
       return
     }
 
     if (!user.isVerified) {
-      res.status(403).json({ error: 'Please verify your email first' })
+      res.status(403).json({
+        error: 'Email not verified',
+        message: 'Please verify your email before logging in'
+      })
       return
     }
 
@@ -102,40 +109,38 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const accessToken = jwt.sign(
       tokenPayload,
       process.env.ACCESS_TOKEN_SECRET || '',
-      {
-        expiresIn: '24h'
-      }
+      { expiresIn: '45m' } // access token expires in 45 minutes
     )
+
     const refreshToken = jwt.sign(
       tokenPayload,
       process.env.REFRESH_TOKEN_SECRET || '',
-      {
-        expiresIn: '60d'
-      }
+      { expiresIn: '7d' } // Reduced from 60d for security
     )
 
-    let savedToken = await Token.findOne({ userId: user._id || user.id })
-    if (savedToken) {
-      await savedToken.deleteOne()
-    } else {
-      new Token({
-        userId: user.id,
-        refreshToken,
-        accessToken
-      }).save()
-    }
+    // Remove old tokens
+    await Token.deleteMany({ userId: user._id })
+
+    // Save new tokens
+    await new Token({
+      userId: user._id,
+      refreshToken,
+      accessToken,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    }).save()
 
     res.json({
+      accessToken,
       refreshToken,
       user: {
-        id: user.id,
+        id: user._id,
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin
       }
     })
   } catch (error) {
-    console.error(error)
+    console.error('Login error:', error)
     res.status(500).json({ error: 'Internal server error' })
   }
 }

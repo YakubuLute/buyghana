@@ -116,6 +116,7 @@ export interface IProduct extends Document {
 }
 
 export interface ICartProduct extends Document {
+  id?: Schema.Types.ObjectId
   product: Schema.Types.ObjectId
   quantity: number
   selectedSize?: string

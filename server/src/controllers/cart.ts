@@ -3,6 +3,7 @@ import User from '../models/user'
 import { CartProduct } from '../models/cart-products'
 import { Product } from '../models/product'
 import mongoose from 'mongoose'
+import { ICartProduct } from '../Interface/interface'
 
 export const getUserCart = async (req: Request, res: Response) => {
   const { id } = req.params
@@ -22,6 +23,17 @@ export const getUserCart = async (req: Request, res: Response) => {
 
     for (const cartProduct of cartProducts) {
       const product = await Product.findById(cartProduct.product)
+      const currentCartProductData = {
+        id: cartProduct._id,
+        product: cartProduct.product,
+        quantity: cartProduct.quantity,
+        selectedSize: cartProduct.selectedSize,
+        selectedColor: cartProduct.selectedColor,
+        productName: cartProduct.productName,
+        productImage: cartProduct.productImage,
+        productPrice: cartProduct.productPrice
+      }
+
       if (!product) {
         cart.push({
           ...cartProduct.toObject(),
@@ -29,27 +41,32 @@ export const getUserCart = async (req: Request, res: Response) => {
           productOutOfStock: true
         })
       } else {
-        cartProduct.productName = product.name
-        cartProduct.productPrice = product.price
-        cartProduct.productImage = product.image
-        if (product.countInStock < cartProduct.quantity) {
+        currentCartProductData['productName'] = product.name
+        currentCartProductData['productImage'] = product.image
+        currentCartProductData['productPrice'] = product.price
+        if (
+          !cartProduct.reserved &&
+          product.countInStock < cartProduct.quantity
+        ) {
           cart.push({
-            ...cartProduct.toObject(),
+            ...currentCartProductData,
             productExists: true,
             productOutOfStock: true
           })
         } else {
           cart.push({
-            ...cartProduct.toObject(),
+            ...currentCartProductData,
             productExists: true,
             productOutOfStock: false
           })
         }
       }
     }
-    res.json(cart)
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error' })
+    res.status(200).json(cart)
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: error.message || 'Internal server error', error: error })
   }
 }
 
@@ -64,8 +81,11 @@ export const getUserCartCount = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found' })
     }
     res.json({ count: user.cart.length })
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error' })
+  } catch (error: any) {
+    console.error("Couldn't get user cart count", error)
+    res
+      .status(500)
+      .json({ message: error.message || 'Internal server error', error: error })
   }
 }
 
@@ -77,45 +97,58 @@ export const getCartProductById = async (req: Request, res: Response) => {
         .status(400)
         .json({ message: 'User ID and Cart Product ID are required' })
     }
-    const cartProduct = await CartProduct.findById(cartProductId)
 
+    const cartProduct = await CartProduct.findById(cartProductId)
     if (!cartProduct) {
       return res.status(404).json({ message: 'Cart product not found' })
     }
-    const cart = []
+
+    // Initialize with mandatory fields from ICartProduct
+    const currentCartProductData: Partial<ICartProduct> = {
+      _id: cartProduct._id,
+      product: cartProduct.product,
+      quantity: cartProduct.quantity,
+      selectedSize: cartProduct.selectedSize,
+      selectedColor: cartProduct.selectedColor,
+      productName: cartProduct.productName,
+      productImage: cartProduct.productImage,
+      productPrice: cartProduct.productPrice,
+      reservationExpiry: cartProduct.reservationExpiry,
+      reserved: cartProduct.reserved
+    }
+
     const product = await Product.findById(cartProduct.product)
+    let cartProductData: Partial<ICartProduct> & {
+      productExists: boolean
+      productOutOfStock: boolean
+    }
+
     if (!product) {
-      cart.push({
-        ...cartProduct.toObject(),
+      cartProductData = {
+        ...currentCartProductData,
         productExists: false,
-        productOutOfStock: true
-      })
+        productOutOfStock: false
+      }
     } else {
-      cartProduct.productName = product.name
-      cartProduct.productPrice = product.price
-      cartProduct.productImage = product.image
-      if (product.countInStock < cartProduct.quantity) {
-        cart.push({
-          ...cartProduct.toObject(),
-          productExists: true,
-          productOutOfStock: true
-        })
-      } else {
-        cart.push({
-          ...cartProduct.toObject(),
-          productExists: true,
-          productOutOfStock: false
-        })
+      // Update product-related fields with latest data
+      currentCartProductData.productName = product.name
+      currentCartProductData.productImage = product.image
+      currentCartProductData.productPrice = product.price
+
+      cartProductData = {
+        ...currentCartProductData,
+        productExists: true,
+        productOutOfStock:
+          !cartProduct.reserved && product.countInStock < cartProduct.quantity
       }
     }
 
     return res.json({
-      message: 'Cart fetched successfully ',
-      data: cartProduct,
-      cart
+      message: 'Cart product fetched successfully',
+      data: cartProductData
     })
   } catch (error) {
-    console.log('Error getting product by ID:', error)
+    console.error('Error getting cart product by ID:', error)
     res.status(500).json({ message: 'Internal server error' })
   }
 }
@@ -125,13 +158,13 @@ export const addToCart = async (req: Request, res: Response) => {
   session.startTransaction()
   try {
     const { productId } = req.body
-    const { userId } = req.params
-    if (!productId || !userId) {
+    const { id } = req.params
+    if (!productId || !id) {
       return res
-        .status(400)
+        .status(404)
         .json({ message: 'Product ID or UserID is required' })
     }
-    const user = await User.findById(userId)
+    const user = await User.findById(id)
     if (!user) {
       await session.abortTransaction()
       return res.status(404).json({ message: 'User not found' })
@@ -236,6 +269,7 @@ export const modifyProductQuantity = async (req: Request, res: Response) => {
         .status(400)
         .json({ message: 'User ID and Cart Product ID are required' })
     }
+
     const user = await User.findById(id)
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
@@ -265,9 +299,11 @@ export const modifyProductQuantity = async (req: Request, res: Response) => {
       message: 'Product quantity modified successfully',
       data: cartProduct
     })
-  } catch (error) {
+  } catch (error: any) {
     console.log('Error modifying product quantity:', error)
-    res.status(500).json({ message: 'Internal server error', error })
+    res
+      .status(500)
+      .json({ message: error.nessage || 'Internal server error', error })
   }
 }
 
@@ -308,34 +344,39 @@ export const removeFromCart = async (req: Request, res: Response) => {
         .then(() => {
           console.log('Product stock updated')
         })
-        .catch(async error => {
-          console.log('Error updating product stock')
+        .catch(async (error: any) => {
+          console.error('Error updating product stock: ', error)
           await session.abortTransaction()
-          res.status(500).json({ message: 'Internal server error', error })
+          res
+            .status(500)
+            .json({ message: error.message || 'Internal server error', error })
         })
     }
-      
+
     // Find the index of the product to remove
-    const productIndex = user.cart.findIndex(product => product.id === cartProductToRemove.id);
+    const productIndex = user.cart.findIndex(
+      product => product.id === cartProductToRemove.id
+    )
 
     // If the product is found, remove it from the cart
     if (productIndex !== -1) {
-      user.cart.splice(productIndex, 1);
+      user.cart.splice(productIndex, 1)
     }
 
-    await user.save({ session });
-    const cartProduct = await CartProduct.findByIdAndDelete(cartProductToRemove.id).session(session);
+    await user.save({ session })
+    const cartProduct = await CartProduct.findByIdAndDelete(
+      cartProductToRemove.id
+    ).session(session)
     if (!cartProduct) {
-      await session.abortTransaction();
-      return res.status(404).json({ message: 'Product not found' });
+      await session.abortTransaction()
+      return res.status(404).json({ message: 'Product not found' })
     }
-    
+
     await session.commitTransaction()
     res.json({
       message: 'Product removed from cart successfully',
       data: cartProduct
     })
-
   } catch (error) {
     console.log('Error removing product from cart:', error)
     res.status(500).json({ message: 'Internal server error', error })
