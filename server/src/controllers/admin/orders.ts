@@ -17,6 +17,7 @@ export const getOrders = async (req: Request, res: Response) => {
           populate: { path: 'category', select: 'name' }
         }
       })
+
     if (!orders) {
       return res.status(404).json({ message: 'Orders not found' })
     }
@@ -27,7 +28,7 @@ export const getOrders = async (req: Request, res: Response) => {
     console.log(error)
     return res
       .status(500)
-      .json({ message: 'Internal server error', error: error })
+      .json({ message: error.message || 'Internal server error', error: error })
   }
 }
 
@@ -44,7 +45,7 @@ export const getOrdersCount = async (req: Request, res: Response) => {
     console.log(error)
     return res
       .status(500)
-      .json({ message: 'Internal server error', error: error })
+      .json({ message: error.message || 'Internal server error', error: error })
   }
 }
 
@@ -54,6 +55,7 @@ export const changeOrderStatus = async (req: Request, res: Response) => {
   if (!orderId || !status) {
     return res.status(400).json({ message: 'Order id and status are required' })
   }
+
   try {
     let order = await Order.findById<any>(orderId)
     // if order not found
@@ -65,12 +67,39 @@ export const changeOrderStatus = async (req: Request, res: Response) => {
       order.statusHistory.push(order.status)
     }
 
-    order.status = status
-    order = await order.save()
+    const statusTransitions: Partial<any> = {
+      pending: ['processed', 'cancelled', 'expired'],
+      processed: ['shipped', 'cancelled', 'on-hold'],
+      shipped: ['out-for-delivery', 'cancelled', 'on-hold'],
+      'out-for-delivery': ['delivered', 'cancelled'],
+      'on-hold': ['cancelled', 'shipped', 'out-for-delivery']
+    }
 
-    return res
-      .status(200)
-      .json({ message: 'Order status updated successfully', data: order })
+    // Check if the requested status is valid and allowed
+    if (
+      order.status !== statusTransitions &&
+      statusTransitions.order.status &&
+      statusTransitions.order.status.includes(status)
+    ) {
+      if (!order.statusHistory.includes(order.status)) {
+        order.statusHistory.push(order.status)
+      }
+
+      // Update the order status
+      order.status = status
+
+      // Save the updated order
+      order = await order.save()
+
+      return res
+        .status(200)
+        .json({ message: 'Order status updated successfully', data: order })
+    } else {
+      return res.status(400).json({
+        message: `Invalid status update\nStatus cannot go directly from ${order.status} to ${status}`,
+        possibleStatuses: statusTransitions[order.status]
+      })
+    }
   } catch (error: any) {
     console.log(error)
     return res
@@ -90,6 +119,6 @@ export const deleteOrder = async (req: Request, res: Response) => {
     }
     res.status(200).json({ message: 'Order deleted successfully' })
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message || "Internal Server Error", error })
   }
 }

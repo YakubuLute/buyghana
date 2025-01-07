@@ -192,9 +192,6 @@ exports.changeOrderStatus = async (req, res) => {
       shipped: ['out-for-delivery', 'cancelled', 'on-hold'],
       'out-for-delivery': ['delivered', 'cancelled'],
       'on-hold': ['cancelled', 'shipped', 'out-for-delivery'],
-      // No further transitions for cancelled orders
-      // No further transitions for expired orders
-      // No further transitions for delivered orders....You could add refund and return system if you want
     };
 
     // Check if the requested status is valid and allowed

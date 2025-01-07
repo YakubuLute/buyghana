@@ -13,16 +13,17 @@ export const addProducts = async (req: Request, res: Response) => {
   try {
     const uploadImg = util.promisify(
       upload.fields([
-        { name: 'images', maxCount: 10 },
-        { name: 'thumbnail', maxCount: 1 }
+        { name: 'images', maxCount: 1 },
+        { name: 'thumbnail', maxCount: 10 }
       ])
     )
     try {
       await uploadImg(req, res)
-    } catch (error: any) {
+    } catch (err: any) {
       return res.status(500).json({
-        message: 'Error uploading images',
-        storageErrors: error.storageErrors
+        type: err.code,
+        message: `${err.message}{${err.field}}` || 'Error uploading images',
+        storageErrors: err.storageErrors
       })
     }
     const category = await Category.findById(req.body.category)
