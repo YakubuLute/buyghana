@@ -17,6 +17,7 @@ export const addCategories = async (req: Request, res: Response) => {
     try {
       await uploadImage(req, res)
     } catch (error: any) {
+      console.error(error)
       return res.status(500).json({
         type: error?.code,
         storageError: error?.storageError,
