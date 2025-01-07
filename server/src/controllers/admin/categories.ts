@@ -20,7 +20,7 @@ export const addCategories = async (req: Request, res: Response) => {
       console.error(error)
       return res.status(500).json({
         type: error?.code,
-        storageError: error?.storageError,
+        storageErrors: error?.storageErrors,
         message: error?.message + ' ' + error?.field || 'Error uploading image',
         error: error
       })
@@ -32,6 +32,7 @@ export const addCategories = async (req: Request, res: Response) => {
     }
 
     const image = req.files['image'][0]
+    if (!image) return res.status(404).json({ message: 'No file found' })
     // Update image path to include protocol and host
     req.body['image'] = `${req.protocol}://${req.get('host')}/${image.path}`
 
@@ -78,6 +79,7 @@ export const editCategory = async (req: Request, res: Response) => {
     })
   }
 }
+
 export const deleteCategory = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
