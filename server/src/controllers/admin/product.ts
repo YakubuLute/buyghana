@@ -266,21 +266,21 @@ export const getProducts = async (req: Request, res: Response) => {
 // delete product images controller
 export const deleteProductsImages = async (req: Request, res: Response) => {
   try {
-    const { deletedImageUrl } = req.body
+    const { deletedImageUrls } = req.body
     const productId = req.params.id
 
-    // check if productId is valid and deletedImageUrl is an array
+    // check if productId is valid and deletedImageUrls is an array
     if (
       !mongoose.isValidObjectId(productId) ||
-      !Array.isArray(deletedImageUrl)
+      !Array.isArray(deletedImageUrls)
     ) {
       return res.status(400).json({
-        message: 'Invalid product id or deletedImageUrl must be an array'
+        message: 'Invalid product id or deletedImageUrls must be an array'
       })
     }
 
     // call delete multer function
-    await deleteImages(deletedImageUrl)
+    await deleteImages(deletedImageUrls)
 
     // query product
     const product = await Product.findById(productId)
@@ -290,7 +290,7 @@ export const deleteProductsImages = async (req: Request, res: Response) => {
 
     // filter out the deleted images from the product images array
     product.images = product?.images?.filter((image: string) => {
-      return !deletedImageUrl.includes(image)
+      return !deletedImageUrls.includes(image)
     })
 
     // save product
@@ -298,7 +298,7 @@ export const deleteProductsImages = async (req: Request, res: Response) => {
 
     // return the product with the updated images as a response
     res
-      .status(204)
+      .status(200)
       .json({ message: 'Product image deleted successfully', data: product })
   } catch (error: any) {
     console.error('Error deleting product image', error)
@@ -340,7 +340,23 @@ export const deleteProduct = async (req: Request, res: Response) => {
   }
 }
 
-export const getProductDetails = async (req: Request, res: Response) => {}
+export const getProductDetails = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params
+    if (!productId)
+      return res.status(400).json({ message: 'Product ID is required' })
+
+    const product = await Product.findOne({ id: productId })
+    if (!product) return res.status(404).json({ message: 'Product not found' })
+
+    res.json({ message: 'Product fetched successfully', data: product })
+  } catch (error: any) {
+    console.error(error)
+    return res
+      .status(500)
+      .json({ message: 'Internal Server Error', error: error })
+  }
+}
 
 export const productsCount = async (req: Request, res: Response) => {
   try {
