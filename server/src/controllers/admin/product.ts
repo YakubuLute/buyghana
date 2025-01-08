@@ -43,23 +43,31 @@ export const addProducts = async (req: Request, res: Response) => {
 
     // for a single image select the first one and update the path to include protocol and host
     const image = req.files['images'][0]
+    if (!image) return res.status(404).json({ message: 'No file found' })
+
     req.body['images'] = `${req.protocol}://${req.get('host')}/${image.path}`
 
     // for multiple images select all and update the path to include protocol and host
-    const gallery = req.files['images'].map((image: any) => {
-      return `${req.protocol}://${req.get('host')}/${image.path}`
-    })
-
-    if (gallery.length > 0) {
-      req.body['images'] = gallery
+    const gallery = req.files['images']
+    const imagePaths = []
+    if (gallery && gallery.length > 0) {
+      for (const image of gallery) {
+        const imagePath = `${req.protocol}://${req.get('host')}/${image.path}`
+        imagePaths.push(imagePath)
+      }
     }
+
+    if (imagePaths.length > 0) {
+      req.body['images'] = imagePaths
+    }
+
     // create product
     const product = new Product(req.body).save()
     if (!product) {
-      return res.status(400).json({ message: 'Failed to create product' })
+      return res.status(500).json({ message: 'Failed to create product' })
     }
     res
-      .status(201)
+      .status(200)
       .json({ message: 'Product added successfully', data: product })
   } catch (error: any) {
     console.error('Error adding a products', error)
@@ -68,12 +76,13 @@ export const addProducts = async (req: Request, res: Response) => {
         message: error.message || 'Error uploading images'
       })
     }
-    res.status(500).json({ message: 'Internal server error', error: error })
+    res
+      .status(500)
+      .json({ message: error.message || 'Internal server error', error: error })
   }
 }
 
 // edit product controller
-
 export const editProduct = async (req: Request, res: Response) => {
   try {
     if (
@@ -139,20 +148,24 @@ export const editProduct = async (req: Request, res: Response) => {
         }
 
         // select image
-        const image = req.files['images']
-        if (image && image.length > 0) {
-          // for multiple images select all and update the path to include protocol and host
-          const gallery = req.files['images'].map((image: any) => {
-            return `${req.protocol}://${req.get('host')}/${image.path}`
-          })
-          // add the new images to the product images array
-          req.body['images'] = [...product.image, ...gallery]
+        const imageFiles = req.files['images']
+        const galleryUpdate = imageFiles && imageFiles.length > 0
+        if (galleryUpdate) {
+          const images = req.files['images']
+          const imagePaths = []
+          for (const image of images) {
+            const imagePath = `${req.protocol}://${req.get('host')}/${
+              image.path
+            }`
+            imagePaths.push(imagePath)
+          }
+          req.body['images'] = [...product.images, ...imagePaths]
         }
       }
       // update product
       const updatedProduct = await Product.findByIdAndUpdate(
         req.params.id,
-        req.body,
+        { ...req.body },
         { new: true }
       )
       if (!updatedProduct) {
@@ -163,7 +176,10 @@ export const editProduct = async (req: Request, res: Response) => {
         .json({ message: 'Product updated successfully', data: updatedProduct })
     }
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    console.log('Error updating product', error)
+    res
+      .status(500)
+      .json({ message: error.message || 'Internal server error', error })
   }
 }
 
