@@ -20,6 +20,8 @@ export interface IWishlistItem {
   productName: string
   productImage: string
   productPrice: number
+  productExists?: boolean
+  productOutOfStock?: boolean
 }
 
 // Define interface for User document
@@ -114,6 +116,7 @@ export interface IProduct extends Document {
 }
 
 export interface ICartProduct extends Document {
+  id?: Schema.Types.ObjectId
   product: Schema.Types.ObjectId
   quantity: number
   selectedSize?: string
@@ -132,3 +135,29 @@ export interface IReview extends Document {
   rating: number
   comment: string
 }
+
+export interface OrderItem {
+  quantity: number
+  product: string // MongoDB ObjectId as string
+  cartProductId: string
+  productPrice: number
+  productName: string
+  productImage: string
+  selectedSize?: string
+  selectedColour?: string
+}
+
+export interface CreateOrderDto {
+  orderItems: OrderItem[]
+  shippingAddress1: string
+  shippingAddress2?: string
+  city: string
+  postalCode: string
+  country: string
+  phone: string
+  totalPrice: number
+  user: string // MongoDB ObjectId as string
+  paymentId: string
+  status?: string
+}
+

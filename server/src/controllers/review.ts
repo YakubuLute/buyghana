@@ -23,12 +23,12 @@ export const leaveReview = async (req: Request, res: Response) => {
     }).save()
 
     if (!review) {
-      return res.status(400).json({ message: 'Review could not be saved' })
+      return res.status(500).json({ message: 'Review could not be saved' })
     }
 
     const product = await Product.findById(req.params.id)
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' })
+      return res.status(500).json({ message: 'Product not found' })
     }
 
     product.reviews.push(review.id)
@@ -51,73 +51,62 @@ export const getProductsReview = async (req: Request, res: Response) => {
   const session = await mongoose.startSession()
   session.startTransaction()
 
+  const { id } = req.params
+  if (!id) {
+    return res.status(400).json({ message: 'Product id is required' })
+  }
   try {
-    const { id } = req.params
-    if (!id) {
-      return res.status(400).json({ message: 'Product id is required' })
-    }
-
-    // pagination
-    const page = req.query.page ? parseInt(req.query.page as string) : 1
-    const pageSize = req.query.pageSize
-      ? parseInt(req.query.pageSize as string)
-      : 10
-    const skip = (page - 1) * pageSize
-
-    // check the validity of the access token
-    const accessToken = req.headers.authorization?.split(' ')[1]
-    if (!accessToken) {
-      return res.status(401).json({ message: 'Access token is required' })
-    }
-    //TODO: check the validity of the access token
-    // const tokenData = jwt.decode(accessToken)
-    // if (!tokenData) {
-    //   return res.status(401).json({ message: 'Invalid access token' })
-    // }
-
     const product = await Product.findById(id)
-    if (!product) {
-      await session.abortTransaction()
-      return res.status(404).json({ message: 'Product not found' })
-    }
+    if (!product) return res.status(404).json({ message: 'Product not found' })
 
-    // get reviews of the product by product id in the product model
-    const reviews = await Review.find({ _id: { $in: product.reviews } })
-      .skip(skip)
-      .limit(pageSize)
-      .sort({ date: -1 })
-    if (!reviews) {
-      await session.abortTransaction()
-      return res.status(404).json({ message: 'Reviews not found' })
-    }
+    const page = req.query.page ? +req.query.page : 1 // Default to page 1 if not specified
+    const pageSize = 10 // Number of reviews per page, adjust as needed
 
-    // get user name of the reviews and always ensure
-    //that the username is the name of the user
-    // who left the review even if the user is deleted or has updated the name
-
-    const processedReviews = reviews.map(async review => {
+    const accessToken = (req.header('Authorization') as any)
+      .replace('Bearer', '')
+      .trim()
+    const tokenData = jwt.decode(accessToken) as any
+    const reviews = await Review.aggregate([
+      {
+        $match: {
+          _id: { $in: product.reviews }
+        }
+      },
+      {
+        $addFields: {
+          sortId: {
+            $cond: [
+              { $eq: ['$user', new mongoose.Types.ObjectId(tokenData?.id)] },
+              0,
+              1
+            ]
+          }
+        }
+      },
+      { $sort: { sortId: 1, date: -1 } },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize }
+    ])
+    const processedReviews = []
+    for (const review of reviews) {
       const user = await User.findById(review.user)
-      return {
-        ...review,
-        userName: user?.name
+      if (!user) {
+        processedReviews.push(review)
+        continue
       }
-    })
-
-    // save the processed reviews to the database
-    const savedReviews = await Review.insertMany(processedReviews)
-    if (!savedReviews) {
-      await session.abortTransaction()
-      return res.status(500).json({ message: 'Reviews could not be saved' })
+      let newReview
+      if (review.userName !== user.name) {
+        review.userName = user.name
+        newReview = await review.save({ session })
+      }
+      processedReviews.push(newReview ?? review)
     }
-
     await session.commitTransaction()
-    res
-      .status(201)
-      .json({ message: 'Reviews fetched successfully', data: savedReviews })
-  } catch (error: any) {
-    console.error('Error in getProductsReview', error)
+    return res.json(processedReviews)
+  } catch (err: any) {
+    console.log("Couldn't add a review: ", err)
     await session.abortTransaction()
-    res.status(500).json({ message: error.message, error: error })
+    return res.status(500).json({ type: err.name, message: err.message })
   } finally {
     await session.endSession()
   }

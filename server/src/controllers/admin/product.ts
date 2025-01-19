@@ -13,16 +13,17 @@ export const addProducts = async (req: Request, res: Response) => {
   try {
     const uploadImg = util.promisify(
       upload.fields([
-        { name: 'images', maxCount: 10 },
-        { name: 'thumbnail', maxCount: 1 }
+        { name: 'images', maxCount: 1 },
+        { name: 'thumbnail', maxCount: 10 }
       ])
     )
     try {
       await uploadImg(req, res)
-    } catch (error: any) {
+    } catch (err: any) {
       return res.status(500).json({
-        message: 'Error uploading images',
-        storageErrors: error.storageErrors
+        type: err.code,
+        message: `${err.message}{${err.field}}` || 'Error uploading images',
+        storageErrors: err.storageErrors
       })
     }
     const category = await Category.findById(req.body.category)
@@ -42,23 +43,31 @@ export const addProducts = async (req: Request, res: Response) => {
 
     // for a single image select the first one and update the path to include protocol and host
     const image = req.files['images'][0]
+    if (!image) return res.status(404).json({ message: 'No file found' })
+
     req.body['images'] = `${req.protocol}://${req.get('host')}/${image.path}`
 
     // for multiple images select all and update the path to include protocol and host
-    const gallery = req.files['images'].map((image: any) => {
-      return `${req.protocol}://${req.get('host')}/${image.path}`
-    })
-
-    if (gallery.length > 0) {
-      req.body['images'] = gallery
+    const gallery = req.files['images']
+    const imagePaths = []
+    if (gallery && gallery.length > 0) {
+      for (const image of gallery) {
+        const imagePath = `${req.protocol}://${req.get('host')}/${image.path}`
+        imagePaths.push(imagePath)
+      }
     }
+
+    if (imagePaths.length > 0) {
+      req.body['images'] = imagePaths
+    }
+
     // create product
     const product = new Product(req.body).save()
     if (!product) {
-      return res.status(400).json({ message: 'Failed to create product' })
+      return res.status(500).json({ message: 'Failed to create product' })
     }
     res
-      .status(201)
+      .status(200)
       .json({ message: 'Product added successfully', data: product })
   } catch (error: any) {
     console.error('Error adding a products', error)
@@ -67,12 +76,13 @@ export const addProducts = async (req: Request, res: Response) => {
         message: error.message || 'Error uploading images'
       })
     }
-    res.status(500).json({ message: 'Internal server error', error: error })
+    res
+      .status(500)
+      .json({ message: error.message || 'Internal server error', error: error })
   }
 }
 
 // edit product controller
-
 export const editProduct = async (req: Request, res: Response) => {
   try {
     if (
@@ -138,20 +148,24 @@ export const editProduct = async (req: Request, res: Response) => {
         }
 
         // select image
-        const image = req.files['images']
-        if (image && image.length > 0) {
-          // for multiple images select all and update the path to include protocol and host
-          const gallery = req.files['images'].map((image: any) => {
-            return `${req.protocol}://${req.get('host')}/${image.path}`
-          })
-          // add the new images to the product images array
-          req.body['images'] = [...product.image, ...gallery]
+        const imageFiles = req.files['images']
+        const galleryUpdate = imageFiles && imageFiles.length > 0
+        if (galleryUpdate) {
+          const images = req.files['images']
+          const imagePaths = []
+          for (const image of images) {
+            const imagePath = `${req.protocol}://${req.get('host')}/${
+              image.path
+            }`
+            imagePaths.push(imagePath)
+          }
+          req.body['images'] = [...product.images, ...imagePaths]
         }
       }
       // update product
       const updatedProduct = await Product.findByIdAndUpdate(
         req.params.id,
-        req.body,
+        { ...req.body },
         { new: true }
       )
       if (!updatedProduct) {
@@ -162,7 +176,10 @@ export const editProduct = async (req: Request, res: Response) => {
         .json({ message: 'Product updated successfully', data: updatedProduct })
     }
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    console.log('Error updating product', error)
+    res
+      .status(500)
+      .json({ message: error.message || 'Internal server error', error })
   }
 }
 
@@ -249,21 +266,21 @@ export const getProducts = async (req: Request, res: Response) => {
 // delete product images controller
 export const deleteProductsImages = async (req: Request, res: Response) => {
   try {
-    const { deletedImageUrl } = req.body
+    const { deletedImageUrls } = req.body
     const productId = req.params.id
 
-    // check if productId is valid and deletedImageUrl is an array
+    // check if productId is valid and deletedImageUrls is an array
     if (
       !mongoose.isValidObjectId(productId) ||
-      !Array.isArray(deletedImageUrl)
+      !Array.isArray(deletedImageUrls)
     ) {
       return res.status(400).json({
-        message: 'Invalid product id or deletedImageUrl must be an array'
+        message: 'Invalid product id or deletedImageUrls must be an array'
       })
     }
 
     // call delete multer function
-    await deleteImages(deletedImageUrl)
+    await deleteImages(deletedImageUrls)
 
     // query product
     const product = await Product.findById(productId)
@@ -273,7 +290,7 @@ export const deleteProductsImages = async (req: Request, res: Response) => {
 
     // filter out the deleted images from the product images array
     product.images = product?.images?.filter((image: string) => {
-      return !deletedImageUrl.includes(image)
+      return !deletedImageUrls.includes(image)
     })
 
     // save product
@@ -281,7 +298,7 @@ export const deleteProductsImages = async (req: Request, res: Response) => {
 
     // return the product with the updated images as a response
     res
-      .status(204)
+      .status(200)
       .json({ message: 'Product image deleted successfully', data: product })
   } catch (error: any) {
     console.error('Error deleting product image', error)
@@ -323,7 +340,23 @@ export const deleteProduct = async (req: Request, res: Response) => {
   }
 }
 
-export const getProductDetails = async (req: Request, res: Response) => {}
+export const getProductDetails = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params
+    if (!productId)
+      return res.status(400).json({ message: 'Product ID is required' })
+
+    const product = await Product.findOne({ id: productId })
+    if (!product) return res.status(404).json({ message: 'Product not found' })
+
+    res.json({ message: 'Product fetched successfully', data: product })
+  } catch (error: any) {
+    console.error(error)
+    return res
+      .status(500)
+      .json({ message: 'Internal Server Error', error: error })
+  }
+}
 
 export const productsCount = async (req: Request, res: Response) => {
   try {

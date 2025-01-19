@@ -15,10 +15,7 @@ export const tokenSchema = new Schema<ITokenSchema>({
     type: String
     // required: true
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
+  createdAt: { type: Date, default: Date.now, expires: 60 * 86400 },
   expiresAt: {
     type: Date
   }

@@ -6,49 +6,55 @@ import { sendEmail } from '../utils/email'
 import { generateOTP } from '../utils/otp'
 import { CustomError, ITokenSchema, TokenPayload } from '../Interface/interface'
 import { Token } from '../models/token-schema'
+interface ResetTokenPayload {
+  userId: string
+  email: string
+  version: string
+}
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password, phone } = req.body
 
-    const existingUser = await User.findOne({ email: email.toLowerCase() })
+    const existingUser = await User.findOne({
+      $or: [{ email: email.toLowerCase() }, { phone }]
+    })
+
     if (existingUser) {
-      res.status(400).json({ error: 'Email already registered' })
+      res.status(400).json({
+        error:
+          existingUser.email === email.toLowerCase()
+            ? 'Email already registered'
+            : 'Phone number already registered'
+      })
       return
     }
 
-    const salt = await bcrypt.genSalt(10)
+    const salt = await bcrypt.genSalt(12)
     const passwordHash = await bcrypt.hash(password, salt)
 
-    // generate OTP of 6 chars and set the OTP expiration time to 3 mins
     const accountVerificationOTP = generateOTP(6)
     const accountVerificationOTPExpiration = new Date(
-      Date.now() + 3 * 60 * 1000
+      Date.now() + 5 * 60 * 1000 // verification expiration time is 5 minutes
     )
 
-    // user object
     const user = new User({
-      name,
-      email: email.toLowerCase(),
+      ...req.body,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
       passwordHash,
-      phone,
+      phone: phone.trim(),
       accountVerificationOTP,
       accountVerificationOTPExpiration,
       isVerified: false
     })
 
-    let savedUser = await user.save()
-    if (!savedUser) {
-      res.status(500).json({
-        error: 'Internal server error',
-        message: 'Could not create a new user'
-      })
-      return
-    }
+    await user.save()
+
     await sendEmail({
       to: email,
       subject: 'Verify Your Account',
-      text: `Your verification code is: ${accountVerificationOTP}`
+      text: `Your verification code is: ${accountVerificationOTP}. Valid for 5 minutes.`
     })
 
     res.status(201).json({
@@ -59,10 +65,18 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     const err = error as CustomError
     if (err.code === 11000) {
-      res.status(400).json({ error: 'Email already registered' })
+      const keyPattern = err.keyPattern
+      const duplicateField = keyPattern && Object.keys(keyPattern)[0]
+      res.status(400).json({
+        error: duplicateField
+          ? `${
+              duplicateField?.charAt(0).toUpperCase() + duplicateField?.slice(1)
+            } already registered`
+          : "There's a duplicate field already registered"
+      })
       return
     }
-    console.error(error)
+    console.error('Registration error:', error)
     res.status(500).json({ error: 'Internal server error' })
   }
 }
@@ -70,26 +84,24 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body
-
-    const user = await User.findOne({ email: email.toLowerCase() })
+    const user = await User.findOne({ email: email.toLowerCase().trim() })
     if (!user) {
-      res.status(401).json({
-        error: 'Invalid credentials',
-        message: 'User with this email do not exist'
-      })
+      // Use consistent error message for security
+      res.status(401).json({ error: 'Invalid credentials' })
       return
     }
 
     const isValidPassword = await bcrypt.compare(password, user.passwordHash)
     if (!isValidPassword) {
-      res
-        .status(401)
-        .json({ error: 'Invalid credentials', message: 'Invalid password' })
+      res.status(401).json({ error: 'Invalid credentials' })
       return
     }
 
     if (!user.isVerified) {
-      res.status(403).json({ error: 'Please verify your email first' })
+      res.status(403).json({
+        error: 'Email not verified',
+        message: 'Please verify your email before logging in'
+      })
       return
     }
 
@@ -102,40 +114,38 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const accessToken = jwt.sign(
       tokenPayload,
       process.env.ACCESS_TOKEN_SECRET || '',
-      {
-        expiresIn: '24h'
-      }
+      { expiresIn: '45m' } // access token expires in 45 minutes
     )
+
     const refreshToken = jwt.sign(
       tokenPayload,
       process.env.REFRESH_TOKEN_SECRET || '',
-      {
-        expiresIn: '60d'
-      }
+      { expiresIn: '7d' } // Reduced from 60d for security
     )
 
-    let savedToken = await Token.findOne({ userId: user._id || user.id })
-    if (savedToken) {
-      await savedToken.deleteOne()
-    } else {
-      new Token({
-        userId: user.id,
-        refreshToken,
-        accessToken
-      }).save()
-    }
+    // Remove old tokens
+    await Token.deleteMany({ userId: user._id })
+
+    // Save new tokens
+    await new Token({
+      userId: user._id,
+      refreshToken,
+      accessToken,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    }).save()
 
     res.json({
+      accessToken,
       refreshToken,
       user: {
-        id: user.id,
+        id: user._id,
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin
       }
     })
   } catch (error) {
-    console.error(error)
+    console.error('Login error:', error)
     res.status(500).json({ error: 'Internal server error' })
   }
 }
@@ -219,50 +229,103 @@ export const resetPassword = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { resetToken, newPassword } = req.body
+    const { resetToken, newPassword, email } = req.body
 
-    const decoded = jwt.verify(
-      resetToken,
-      process.env.ACCESS_TOKEN_SECRET || ''
-    ) as { userId: string }
+    // Input validation
+    if (!resetToken || !newPassword || !email) {
+      res.status(400).json({ error: 'All fields are required' })
+      return
+    }
 
-    // search for user
-    //TODO: Let's use email if the user is not found becuase of the token
+    // Password strength validation
+    if (newPassword.length < 8) {
+      res.status(400).json({
+        error: 'Password must be at least 8 characters long'
+      })
+      return
+    }
+
+    // Advanced password validation
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    if (!passwordRegex.test(newPassword)) {
+      res.status(400).json({
+        error:
+          'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+      })
+      return
+    }
+
+    // Verify token
+    let decoded: ResetTokenPayload
+    try {
+      decoded = jwt.verify(
+        resetToken,
+        process.env.RESET_TOKEN_SECRET || process.env.ACCESS_TOKEN_SECRET || ''
+      ) as ResetTokenPayload
+    } catch (jwtError) {
+      res.status(400).json({
+        error: 'Invalid or expired reset token'
+      })
+      return
+    }
+
+    // Find user by both ID and email for additional security
     const user = await User.findOne({
-      _id: decoded.userId,
-      resetPasswordToken: resetToken,
-      resetPasswordTokenExpiration: { $gt: new Date() }
+      $and: [
+        { _id: decoded.userId },
+        { email: email.toLowerCase() },
+        { resetPasswordToken: resetToken },
+        { resetPasswordTokenExpiration: { $gt: new Date() } }
+      ]
     })
 
     if (!user) {
-      res.status(400).json({ error: 'Invalid or expired reset token' })
+      res.status(400).json({
+        error: 'Invalid or expired reset token'
+      })
       return
     }
 
-    //TODO: we can try this instead of using resetToken
-    // if (user.resetPasswordOTP !== 1) {
-    //   res.json({ error: 'Invalid or expired reset password OTP' })
-    // }
+    // Prevent reuse of old password
+    const isSamePassword = await bcrypt.compare(newPassword, user.passwordHash)
+    if (isSamePassword) {
+      res.status(400).json({
+        error: 'New password must be different from the current password'
+      })
+      return
+    }
 
-    // encrypt new password
-    const salt = await bcrypt.genSalt(10)
+    // Hash new password with increased security
+    const salt = await bcrypt.genSalt(12)
     const passwordHash = await bcrypt.hash(newPassword, salt)
 
+    // Update user document
     user.passwordHash = passwordHash
     user.resetPasswordToken = undefined
     user.resetPasswordTokenExpiration = undefined
+    user.resetPasswordOTP = undefined
+    user.resetPasswordOTPExpires = undefined
+
+    // Invalidate all existing sessions for security
+    await Token.deleteMany({ userId: user._id })
+
+    // Save changes
     await user.save()
 
-    res.json({ message: 'Password reset successful' })
+    res.json({
+      message:
+        'Password reset successful. Please log in with your new password.'
+    })
   } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
-      res.status(400).json({ error: 'Invalid reset token' })
-      return
-    }
-    console.error(error)
-    res.status(500).json({ message: 'Internal server error', error: error })
+    console.error('Password reset error:', error)
+    res.status(500).json({
+      error:
+        'An error occurred while resetting your password. Please try again.'
+    })
   }
 }
+
 
 export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
   try {

@@ -2,26 +2,27 @@ import { Request, Response } from 'express'
 import User from '../models/user'
 import { Product } from '../models/product'
 import mongoose from 'mongoose'
+import { IWishlistItem } from '../Interface/interface'
 
 export const getUserWishlist = async (req: Request, res: Response) => {
-  const { userId } = req.params
-  if (!userId) {
+  const { id } = req.params
+  if (!id) {
     return res.status(400).json({ message: 'User ID is required' })
   }
   try {
-    const user = await User.findById(userId)
+    const user = await User.findById(id)
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
     // get wishlist products from product model
-    const wishList = []
+    const wishList: IWishlistItem[] = []
     for (const wishProduct of user.wishlist) {
       const product = await Product.findById(wishProduct.productId)
       if (!product) {
         wishList.push({
           ...wishProduct,
           productExists: false,
-          productOutOfStock: true
+          productOutOfStock: false
         })
       } else if (product.countInStock < 1) {
         wishList.push({
@@ -31,8 +32,7 @@ export const getUserWishlist = async (req: Request, res: Response) => {
         })
       } else {
         wishList.push({
-          ...wishProduct,
-          productId: product._id,
+          productId: product._id as any,
           productName: product.name,
           productImage: product.image,
           productPrice: product.price,
@@ -42,10 +42,15 @@ export const getUserWishlist = async (req: Request, res: Response) => {
       }
     }
 
-    res.json({ data: wishList, message: 'Wishlist fetched successfully' })
-  } catch (error) {
+    res
+      .status(201)
+      .json({ data: wishList, message: 'Wishlist fetched successfully' })
+  } catch (error: any) {
     console.error('Error getting wishlist', error)
-    res.status(500).json({ message: 'Failed to get wishlist', error: error })
+    res.status(500).json({
+      message: error.message || 'Failed to get wishlist',
+      error: error
+    })
   }
 }
 
@@ -66,7 +71,9 @@ export const addToWishlist = async (req: Request, res: Response) => {
     }
     const product = await Product.findById(productId)
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' })
+      return res
+        .status(404)
+        .json({ message: 'Erro adding product. Product not found' })
     }
 
     const productAlreadyInWishlist = user.wishlist.find(
@@ -75,12 +82,6 @@ export const addToWishlist = async (req: Request, res: Response) => {
     if (productAlreadyInWishlist) {
       return res.status(409).json({ message: 'Product already in wishlist' })
     }
-
-    const wishlist = await User.findByIdAndUpdate(
-      id,
-      { $addToSet: { wishlist: productId } },
-      { new: true }
-    )
 
     user.wishlist.push({
       productId,
@@ -94,23 +95,26 @@ export const addToWishlist = async (req: Request, res: Response) => {
     res.status(200).json({
       message: 'Product added to wishlist successfully'
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error adding to wishlist', error)
-    res.status(500).json({ message: 'Failed to add to wishlist', error: error })
+    res.status(500).json({
+      message: error.message || 'Failed to add to wishlist',
+      error: error
+    })
   }
 }
 
 export const removeFromWishlist = async (req: Request, res: Response) => {
   try {
-    const { id, productId } = req.params
-    if (!id) {
+    const { userId, productId } = req.params
+    if (!userId) {
       return res.status(400).json({ message: 'User ID is required' })
     }
     if (!productId) {
       return res.status(400).json({ message: 'Product ID is required' })
     }
 
-    const user = await User.findById(id)
+    const user = await User.findById(userId)
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
@@ -125,12 +129,16 @@ export const removeFromWishlist = async (req: Request, res: Response) => {
     user.wishlist.splice(index, 1)
     await user.save()
 
-    res.status(200).json({ message: 'Product removed from wishlist successfully' })
-  
-} catch (error) {
+    res
+      .status(200)
+      .json({ message: 'Product removed from wishlist successfully' })
+  } catch (error: any) {
     console.error('Error removing from wishlist', error)
     res
       .status(500)
-      .json({ message: 'Failed to remove from wishlist', error: error })
+      .json({
+        message: error.message || 'Failed to remove from wishlist',
+        error: error
+      })
   }
 }

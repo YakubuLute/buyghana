@@ -17,9 +17,10 @@ export const addCategories = async (req: Request, res: Response) => {
     try {
       await uploadImage(req, res)
     } catch (error: any) {
+      console.error(error)
       return res.status(500).json({
         type: error?.code,
-        storageError: error?.storageError,
+        storageErrors: error?.storageErrors,
         message: error?.message + ' ' + error?.field || 'Error uploading image',
         error: error
       })
@@ -31,6 +32,7 @@ export const addCategories = async (req: Request, res: Response) => {
     }
 
     const image = req.files['image'][0]
+    if (!image) return res.status(404).json({ message: 'No file found' })
     // Update image path to include protocol and host
     req.body['image'] = `${req.protocol}://${req.get('host')}/${image.path}`
 
@@ -77,6 +79,7 @@ export const editCategory = async (req: Request, res: Response) => {
     })
   }
 }
+
 export const deleteCategory = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
@@ -102,16 +105,17 @@ export const deleteCategory = async (req: Request, res: Response) => {
 
 export const updateCategories = async (req: Request, res: Response) => {
   try {
+    const { name, icon, colour } = req.body
     const category = await Category.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      { name, icon, colour },
       { new: true }
     )
     if (!category) {
       return res.status(404).json({ message: 'Category not found' })
     }
-    res.status(200).json(category)
-  } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.json(category)
+  } catch (err: any) {
+    return res.status(500).json({ message: err.message })
   }
 }

@@ -21,15 +21,14 @@ const productSchema = new Schema({
 
 productSchema.pre('save', async function (this: IProduct, next) {
   if (this.reviews.length > 0) {
-    const populatedProduct = await this.populate({
-      path: 'reviews',
-      select: 'rating'
-    })
-    const totalRating = (populatedProduct.reviews as unknown as IReview[]).reduce(
-      (acc, review) => acc + review.rating,
+    await this.populate('reviews')
+
+    const totalRating = this.reviews.reduce(
+      (acc, review: any) => acc + review.rating,
       0
-    ) / this.reviews.length
-    this.rating = parseFloat(totalRating.toFixed(1))
+    )
+
+    this.rating = parseFloat((totalRating / this.reviews.length).toFixed(1))
     this.numberOfReviews = this.reviews.length
   }
   next()

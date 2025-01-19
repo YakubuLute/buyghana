@@ -31,12 +31,14 @@ export const deleteUser = async (req: Request, res: Response) => {
   try {
     const userId = req.params.id
 
+    if (!userId) return res.json({ message: 'User ID is required' })
+
     const user = await User.findById(userId)
     if (!user) return res.status(404).json({ message: 'User not found' })
 
     const orders = await Order.find({ user: userId })
 
-    // Extract order item IDs from all orders
+    // Remove user's orders and associated order items from the server.
     const orderItemIds = orders.flatMap(order => order.orderItems)
 
     // Remove user's cart products
@@ -47,9 +49,6 @@ export const deleteUser = async (req: Request, res: Response) => {
       $pull: { cartProducts: { $exists: true } }
     })
 
-    // Remove user's reviews
-    // await Review.deleteMany({ user: userId });
-
     // Remove user's orders and associated order items
     await Order.deleteMany({ user: userId })
 
@@ -58,7 +57,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     await Token.deleteOne({ userId: userId })
 
-    // Finally, remove the user
+    // we can now safely remove the user
     const deletedUser = await User.deleteOne({ _id: userId })
 
     if (!deletedUser) {
@@ -67,7 +66,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     return res.status(204).end()
   } catch (err: any) {
-    return res.status(500).json({ type: err.name, message: err.message })
+    return res.status(500).json({ type: err.name, message: err.message|| "Internal Server Error", error: err })
   }
 }
 

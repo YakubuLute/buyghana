@@ -4,7 +4,8 @@ import { getUserCount, deleteUser } from '../controllers/admin/users'
 import {
   addCategories,
   updateCategories,
-  deleteCategory
+  deleteCategory,
+  editCategory
 } from '../controllers/admin/categories'
 
 import {
@@ -31,7 +32,7 @@ router.delete('/users/:id', deleteUser as any as express.RequestHandler)
 
 // category router
 router.post('/categories', addCategories as express.RequestHandler)
-router.put('/categories/:id', updateCategories as express.RequestHandler)
+router.put('/categories/:id', editCategory as any as express.RequestHandler)
 router.delete(
   '/categories/:id',
   deleteCategory as unknown as express.RequestHandler
