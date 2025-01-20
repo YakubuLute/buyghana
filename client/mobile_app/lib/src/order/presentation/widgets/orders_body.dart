@@ -43,7 +43,7 @@ class _OrdersBodyState extends State<OrdersBody> with TickerProviderStateMixin {
           data: context.theme.copyWith(
             // As suggested by https://stackoverflow.com/a/75573719/17971158
             colorScheme: context.theme.colorScheme.copyWith(
-              surfaceVariant: Colors.transparent,
+              surfaceContainerHighest: Colors.transparent,
             ),
           ),
           child: TabBar(
