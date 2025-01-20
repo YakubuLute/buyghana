@@ -1,5 +1,5 @@
-import 'package:ecomly/core/extensions/context_extensions.dart';
-import 'package:ecomly/core/res/styles/colours.dart';
+import 'package:buyghana/core/extensions/context_extensions.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 

@@ -1,10 +1,10 @@
-import 'package:ecomly/core/common/widgets/app_bar_bottom.dart';
-import 'package:ecomly/core/common/widgets/search_button.dart';
-import 'package:ecomly/src/dashboard/presentation/widgets/menu_icon.dart';
-import 'package:ecomly/src/product/presentation/app/category_riverpod_notifier/category_notifier.dart';
-import 'package:ecomly/src/product/presentation/app/product_riverpod_provider/product_provider.dart';
-import 'package:ecomly/src/product/presentation/widgets/category_selector.dart';
-import 'package:ecomly/src/product/presentation/widgets/dynamic_products_view.dart';
+import 'package:buyghana/core/common/widgets/app_bar_bottom.dart';
+import 'package:buyghana/core/common/widgets/search_button.dart';
+import 'package:buyghana/src/dashboard/presentation/widgets/menu_icon.dart';
+import 'package:buyghana/src/product/presentation/app/category_riverpod_notifier/category_notifier.dart';
+import 'package:buyghana/src/product/presentation/app/product_riverpod_provider/product_provider.dart';
+import 'package:buyghana/src/product/presentation/widgets/category_selector.dart';
+import 'package:buyghana/src/product/presentation/widgets/dynamic_products_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';

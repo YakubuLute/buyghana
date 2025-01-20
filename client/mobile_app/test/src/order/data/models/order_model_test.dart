@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/order/data/models/order_item_model.dart';
-import 'package:ecomly/src/order/data/models/order_model.dart';
-import 'package:ecomly/src/order/domain/entities/order.dart';
-import 'package:ecomly/src/user/data/models/address_model.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/order/data/models/order_item_model.dart';
+import 'package:buyghana/src/order/data/models/order_model.dart';
+import 'package:buyghana/src/order/domain/entities/order.dart';
+import 'package:buyghana/src/user/data/models/address_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../fixtures/fixture_reader.dart';

@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/core/errors/exceptions.dart';
-import 'package:ecomly/core/errors/failures.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/cart/data/datasources/cart_remote_data_src.dart';
-import 'package:ecomly/src/cart/domain/entities/cart_product.dart';
-import 'package:ecomly/src/cart/domain/repos/cart_repo.dart';
+import 'package:buyghana/core/errors/exceptions.dart';
+import 'package:buyghana/core/errors/failures.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/cart/data/datasources/cart_remote_data_src.dart';
+import 'package:buyghana/src/cart/domain/entities/cart_product.dart';
+import 'package:buyghana/src/cart/domain/repos/cart_repo.dart';
 
 class CartRepoImpl implements CartRepo {
   const CartRepoImpl(this._remoteDataSource);

@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:ecomly/core/extensions/string_extensions.dart';
-import 'package:ecomly/core/utils/enums/order_status_enum.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/order/data/models/order_item_model.dart';
-import 'package:ecomly/src/order/domain/entities/order.dart';
-import 'package:ecomly/src/order/domain/entities/order_item.dart';
-import 'package:ecomly/src/user/data/models/address_model.dart';
-import 'package:ecomly/src/user/domain/entities/address.dart';
+import 'package:buyghana/core/extensions/string_extensions.dart';
+import 'package:buyghana/core/utils/enums/order_status_enum.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/order/data/models/order_item_model.dart';
+import 'package:buyghana/src/order/domain/entities/order.dart';
+import 'package:buyghana/src/order/domain/entities/order_item.dart';
+import 'package:buyghana/src/user/data/models/address_model.dart';
+import 'package:buyghana/src/user/domain/entities/address.dart';
 
 class OrderModel extends Order {
   const OrderModel({

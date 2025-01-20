@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/src/order/domain/entities/order.dart' as model;
-import 'package:ecomly/src/order/domain/usecases/get_order.dart';
+import 'package:buyghana/src/order/domain/entities/order.dart' as model;
+import 'package:buyghana/src/order/domain/usecases/get_order.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

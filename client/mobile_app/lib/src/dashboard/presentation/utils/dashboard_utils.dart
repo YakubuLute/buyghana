@@ -1,8 +1,8 @@
-import 'package:ecomly/src/cart/presentation/views/cart_view.dart';
-import 'package:ecomly/src/explore/presentation/views/explore_view.dart';
-import 'package:ecomly/src/home/presentation/views/home_view.dart';
-import 'package:ecomly/src/user/features/profile/presentation/views/profile_view.dart';
-import 'package:ecomly/src/wishlist/presentation/views/wishlist_view.dart';
+import 'package:buyghana/src/cart/presentation/views/cart_view.dart';
+import 'package:buyghana/src/explore/presentation/views/explore_view.dart';
+import 'package:buyghana/src/home/presentation/views/home_view.dart';
+import 'package:buyghana/src/user/features/profile/presentation/views/profile_view.dart';
+import 'package:buyghana/src/wishlist/presentation/views/wishlist_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconly/iconly.dart';

@@ -1,5 +1,5 @@
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/cart/domain/entities/cart_product.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/cart/domain/entities/cart_product.dart';
 
 abstract class CartRepo {
   ResultFuture<List<CartProduct>> getCart(String userId);

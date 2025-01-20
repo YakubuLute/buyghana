@@ -1,4 +1,4 @@
-import 'package:ecomly/core/utils/core_utils.dart';
+import 'package:buyghana/core/utils/core_utils.dart';
 import 'package:flutter/material.dart';
 
 abstract class Colours {

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/user/data/models/address_model.dart';
-import 'package:ecomly/src/user/domain/entities/address.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/user/data/models/address_model.dart';
+import 'package:buyghana/src/user/domain/entities/address.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../fixtures/fixture_reader.dart';

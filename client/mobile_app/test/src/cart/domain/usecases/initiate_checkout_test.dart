@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/src/cart/data/models/cart_product_model.dart';
-import 'package:ecomly/src/cart/domain/repos/cart_repo.dart';
-import 'package:ecomly/src/cart/domain/usecases/initiate_checkout.dart';
+import 'package:buyghana/src/cart/data/models/cart_product_model.dart';
+import 'package:buyghana/src/cart/domain/repos/cart_repo.dart';
+import 'package:buyghana/src/cart/domain/usecases/initiate_checkout.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

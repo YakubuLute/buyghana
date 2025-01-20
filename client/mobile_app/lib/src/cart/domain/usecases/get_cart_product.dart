@@ -1,7 +1,7 @@
-import 'package:ecomly/core/usecase/usecase.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/cart/domain/entities/cart_product.dart';
-import 'package:ecomly/src/cart/domain/repos/cart_repo.dart';
+import 'package:buyghana/core/usecase/usecase.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/cart/domain/entities/cart_product.dart';
+import 'package:buyghana/src/cart/domain/repos/cart_repo.dart';
 import 'package:equatable/equatable.dart';
 
 class GetCartProduct

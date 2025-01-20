@@ -1,4 +1,4 @@
-import 'package:ecomly/core/utils/enums/order_status_enum.dart';
+import 'package:buyghana/core/utils/enums/order_status_enum.dart';
 import 'package:flutter/material.dart';
 
 extension StringExt on String {

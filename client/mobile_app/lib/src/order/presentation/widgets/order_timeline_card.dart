@@ -1,7 +1,7 @@
-import 'package:ecomly/core/res/styles/colours.dart';
-import 'package:ecomly/core/utils/core_utils.dart';
-import 'package:ecomly/core/utils/enums/order_status_enum.dart';
-import 'package:ecomly/src/order/presentation/order_utils.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
+import 'package:buyghana/core/utils/core_utils.dart';
+import 'package:buyghana/core/utils/enums/order_status_enum.dart';
+import 'package:buyghana/src/order/presentation/order_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:timelines/timelines.dart';
 

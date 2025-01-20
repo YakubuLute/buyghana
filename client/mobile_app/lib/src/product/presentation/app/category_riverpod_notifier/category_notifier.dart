@@ -1,4 +1,4 @@
-import 'package:ecomly/src/product/domain/entities/category.dart';
+import 'package:buyghana/src/product/domain/entities/category.dart';
 import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

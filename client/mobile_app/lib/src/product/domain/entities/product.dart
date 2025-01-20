@@ -3,7 +3,7 @@
 
 import 'dart:ui';
 
-import 'package:ecomly/src/product/domain/entities/category.dart';
+import 'package:buyghana/src/product/domain/entities/category.dart';
 import 'package:equatable/equatable.dart';
 
 class Product extends Equatable {

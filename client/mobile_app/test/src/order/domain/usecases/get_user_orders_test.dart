@@ -1,9 +1,9 @@
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/order/domain/usecases/get_user_orders.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/order/domain/usecases/get_user_orders.dart';
 
 import 'order_repo.mock.dart';
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/src/order/domain/entities/order.dart' as model;
+import 'package:buyghana/src/order/domain/entities/order.dart' as model;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

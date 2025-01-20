@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/src/product/domain/entities/review.dart';
-import 'package:ecomly/src/product/domain/usecases/get_product_reviews.dart';
+import 'package:buyghana/src/product/domain/entities/review.dart';
+import 'package:buyghana/src/product/domain/usecases/get_product_reviews.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

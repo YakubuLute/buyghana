@@ -1,4 +1,4 @@
-import 'package:ecomly/core/common/widgets/bottom_sheet_card.dart';
+import 'package:buyghana/core/common/widgets/bottom_sheet_card.dart';
 import 'package:flutter/material.dart';
 
 abstract class CartUtils {

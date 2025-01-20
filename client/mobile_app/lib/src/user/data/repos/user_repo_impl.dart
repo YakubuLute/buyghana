@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/core/errors/exceptions.dart';
-import 'package:ecomly/core/errors/failures.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/user/data/datasources/user_remote_data_src.dart';
-import 'package:ecomly/src/user/domain/entities/user.dart';
-import 'package:ecomly/src/user/domain/repos/user_repo.dart';
+import 'package:buyghana/core/errors/exceptions.dart';
+import 'package:buyghana/core/errors/failures.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/user/data/datasources/user_remote_data_src.dart';
+import 'package:buyghana/src/user/domain/entities/user.dart';
+import 'package:buyghana/src/user/domain/repos/user_repo.dart';
 
 class UserRepoImpl implements UserRepo {
   const UserRepoImpl(this._remoteDataSource);

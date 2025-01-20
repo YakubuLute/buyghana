@@ -1,6 +1,6 @@
-import 'package:ecomly/core/utils/enums/order_status_enum.dart';
-import 'package:ecomly/src/order/domain/entities/order_item.dart';
-import 'package:ecomly/src/user/domain/entities/address.dart';
+import 'package:buyghana/core/utils/enums/order_status_enum.dart';
+import 'package:buyghana/src/order/domain/entities/order_item.dart';
+import 'package:buyghana/src/user/domain/entities/address.dart';
 import 'package:equatable/equatable.dart';
 
 class Order extends Equatable {

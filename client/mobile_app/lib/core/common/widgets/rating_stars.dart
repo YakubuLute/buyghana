@@ -1,4 +1,4 @@
-import 'package:ecomly/core/utils/core_utils.dart';
+import 'package:buyghana/core/utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 

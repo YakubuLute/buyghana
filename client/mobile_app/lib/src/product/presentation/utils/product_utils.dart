@@ -1,5 +1,5 @@
-import 'package:ecomly/core/extensions/context_extensions.dart';
-import 'package:ecomly/src/home/presentation/refactors/search_section.dart';
+import 'package:buyghana/core/extensions/context_extensions.dart';
+import 'package:buyghana/src/home/presentation/refactors/search_section.dart';
 import 'package:flutter/material.dart';
 
 abstract class ProductUtils {

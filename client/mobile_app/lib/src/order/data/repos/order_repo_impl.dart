@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart' hide Order;
-import 'package:ecomly/core/errors/exceptions.dart';
-import 'package:ecomly/core/errors/failures.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/order/data/datasources/order_remote_data_src.dart';
-import 'package:ecomly/src/order/domain/entities/order.dart';
-import 'package:ecomly/src/order/domain/repos/order_repo.dart';
+import 'package:buyghana/core/errors/exceptions.dart';
+import 'package:buyghana/core/errors/failures.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/order/data/datasources/order_remote_data_src.dart';
+import 'package:buyghana/src/order/domain/entities/order.dart';
+import 'package:buyghana/src/order/domain/repos/order_repo.dart';
 
 class OrderRepoImpl implements OrderRepo {
   const OrderRepoImpl(this._remoteDataSource);

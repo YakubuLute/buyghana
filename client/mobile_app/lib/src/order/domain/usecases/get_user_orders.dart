@@ -1,6 +1,6 @@
-import 'package:ecomly/core/usecase/usecase.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/order/domain/repos/order_repo.dart';
+import 'package:buyghana/core/usecase/usecase.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/order/domain/repos/order_repo.dart';
 
 class GetUserOrders extends UsecaseWithParams<DataMap, String> {
   const GetUserOrders(this._repo);

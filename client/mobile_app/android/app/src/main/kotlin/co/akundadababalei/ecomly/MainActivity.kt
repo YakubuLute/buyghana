@@ -1,4 +1,4 @@
-package co.akundadababalei.ecomly
+package co.akundadababalei.buyghana
 
 import io.flutter.embedding.android.FlutterActivity
 

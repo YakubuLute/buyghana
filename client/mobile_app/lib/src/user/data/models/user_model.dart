@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/user/data/models/address_model.dart';
-import 'package:ecomly/src/user/domain/entities/address.dart';
-import 'package:ecomly/src/user/domain/entities/user.dart';
-import 'package:ecomly/src/wishlist/data/models/wishlist_product_model.dart';
-import 'package:ecomly/src/wishlist/domain/entities/wishlist_product.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/user/data/models/address_model.dart';
+import 'package:buyghana/src/user/domain/entities/address.dart';
+import 'package:buyghana/src/user/domain/entities/user.dart';
+import 'package:buyghana/src/wishlist/data/models/wishlist_product_model.dart';
+import 'package:buyghana/src/wishlist/domain/entities/wishlist_product.dart';
 
 class UserModel extends User {
   const UserModel({

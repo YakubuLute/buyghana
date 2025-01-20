@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/core/errors/exceptions.dart';
-import 'package:ecomly/core/errors/failures.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/product/data/datasources/product_remote_data_src.dart';
-import 'package:ecomly/src/product/domain/entities/category.dart';
-import 'package:ecomly/src/product/domain/entities/product.dart';
-import 'package:ecomly/src/product/domain/entities/review.dart';
-import 'package:ecomly/src/product/domain/repos/product_repo.dart';
+import 'package:buyghana/core/errors/exceptions.dart';
+import 'package:buyghana/core/errors/failures.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/product/data/datasources/product_remote_data_src.dart';
+import 'package:buyghana/src/product/domain/entities/category.dart';
+import 'package:buyghana/src/product/domain/entities/product.dart';
+import 'package:buyghana/src/product/domain/entities/review.dart';
+import 'package:buyghana/src/product/domain/repos/product_repo.dart';
 
 class ProductRepoImpl implements ProductRepo {
   const ProductRepoImpl(this._remoteDataSource);

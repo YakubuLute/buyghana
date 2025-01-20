@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/src/wishlist/domain/usecases/remove_from_wishlist.dart';
+import 'package:buyghana/src/wishlist/domain/usecases/remove_from_wishlist.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

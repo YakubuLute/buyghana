@@ -1,7 +1,7 @@
-import 'package:ecomly/core/usecase/usecase.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/product/domain/entities/product.dart';
-import 'package:ecomly/src/product/domain/repos/product_repo.dart';
+import 'package:buyghana/core/usecase/usecase.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/product/domain/entities/product.dart';
+import 'package:buyghana/src/product/domain/repos/product_repo.dart';
 
 class GetProducts extends UsecaseWithParams<List<Product>, int> {
   const GetProducts(this._repo);

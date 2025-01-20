@@ -1,5 +1,5 @@
-import 'package:ecomly/core/res/styles/colours.dart';
-import 'package:ecomly/core/utils/core_utils.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
+import 'package:buyghana/core/utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -47,7 +47,7 @@ class _PaymentProfileViewState extends ConsumerState<PaymentProfileView> {
             );
           },
           onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://dbestech.biz/ecomly')) {
+            if (request.url.startsWith('https://dbestech.biz/buyghana')) {
               context.pop();
               return NavigationDecision.prevent;
             }

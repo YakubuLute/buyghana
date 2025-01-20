@@ -1,5 +1,5 @@
-import 'package:ecomly/src/user/domain/entities/address.dart';
-import 'package:ecomly/src/wishlist/domain/entities/wishlist_product.dart';
+import 'package:buyghana/src/user/domain/entities/address.dart';
+import 'package:buyghana/src/wishlist/domain/entities/wishlist_product.dart';
 import 'package:equatable/equatable.dart';
 
 class User extends Equatable {

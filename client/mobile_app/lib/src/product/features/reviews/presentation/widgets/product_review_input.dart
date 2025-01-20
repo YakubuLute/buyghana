@@ -1,16 +1,16 @@
-import 'package:ecomly/core/common/app/riverpod/current_user_provider.dart';
-import 'package:ecomly/core/common/widgets/input_field.dart';
+import 'package:buyghana/core/common/app/riverpod/current_user_provider.dart';
+import 'package:buyghana/core/common/widgets/input_field.dart';
 
-// import 'package:ecomly/core/common/widgets/rating_stars.dart';
-import 'package:ecomly/core/extensions/double_extensions.dart';
-import 'package:ecomly/core/extensions/string_extensions.dart';
-import 'package:ecomly/core/extensions/text_style_extensions.dart';
-import 'package:ecomly/core/extensions/widget_extensions.dart';
-import 'package:ecomly/core/res/styles/colours.dart';
-import 'package:ecomly/core/res/styles/text.dart';
-import 'package:ecomly/core/utils/core_utils.dart';
-import 'package:ecomly/src/product/domain/entities/product.dart';
-import 'package:ecomly/src/product/presentation/app/product_riverpod_provider/product_provider.dart';
+// import 'package:buyghana/core/common/widgets/rating_stars.dart';
+import 'package:buyghana/core/extensions/double_extensions.dart';
+import 'package:buyghana/core/extensions/string_extensions.dart';
+import 'package:buyghana/core/extensions/text_style_extensions.dart';
+import 'package:buyghana/core/extensions/widget_extensions.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
+import 'package:buyghana/core/res/styles/text.dart';
+import 'package:buyghana/core/utils/core_utils.dart';
+import 'package:buyghana/src/product/domain/entities/product.dart';
+import 'package:buyghana/src/product/presentation/app/product_riverpod_provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

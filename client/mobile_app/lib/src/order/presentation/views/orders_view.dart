@@ -1,10 +1,10 @@
-import 'package:ecomly/core/common/widgets/app_bar_bottom.dart';
-import 'package:ecomly/core/common/widgets/empty_data.dart';
-import 'package:ecomly/core/res/media.dart';
-import 'package:ecomly/core/res/styles/colours.dart';
-import 'package:ecomly/core/utils/core_utils.dart';
-import 'package:ecomly/src/order/presentation/app/order_adapter_provider.dart';
-import 'package:ecomly/src/order/presentation/widgets/orders_body.dart';
+import 'package:buyghana/core/common/widgets/app_bar_bottom.dart';
+import 'package:buyghana/core/common/widgets/empty_data.dart';
+import 'package:buyghana/core/res/media.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
+import 'package:buyghana/core/utils/core_utils.dart';
+import 'package:buyghana/src/order/presentation/app/order_adapter_provider.dart';
+import 'package:buyghana/src/order/presentation/widgets/orders_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
