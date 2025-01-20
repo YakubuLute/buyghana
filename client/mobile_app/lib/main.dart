@@ -42,7 +42,7 @@ class App extends StatelessWidget {
         builder: (_, themeMode, __) {
           return MaterialApp.router(
             routerConfig: router,
-            title: 'Ecomly',
+            title: 'BuyGhana',
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
             themeMode: themeMode,
