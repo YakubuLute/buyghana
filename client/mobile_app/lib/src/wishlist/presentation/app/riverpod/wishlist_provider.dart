@@ -1,8 +1,8 @@
-import 'package:ecomly/core/services/injection_container.dart';
-import 'package:ecomly/src/wishlist/domain/usecases/add_to_wishlist.dart';
-import 'package:ecomly/src/wishlist/domain/usecases/get_wishlist.dart';
-import 'package:ecomly/src/wishlist/domain/usecases/remove_from_wishlist.dart';
-import 'package:ecomly/src/wishlist/presentation/app/riverpod/wishlist_state.dart';
+import 'package:buyghana/core/services/injection_container.dart';
+import 'package:buyghana/src/wishlist/domain/usecases/add_to_wishlist.dart';
+import 'package:buyghana/src/wishlist/domain/usecases/get_wishlist.dart';
+import 'package:buyghana/src/wishlist/domain/usecases/remove_from_wishlist.dart';
+import 'package:buyghana/src/wishlist/presentation/app/riverpod/wishlist_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

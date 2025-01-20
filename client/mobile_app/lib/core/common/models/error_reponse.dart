@@ -1,4 +1,4 @@
-import 'package:ecomly/core/utils/typedefs.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
 import 'package:equatable/equatable.dart';
 
 class ErrorResponse extends Equatable {

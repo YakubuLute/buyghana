@@ -1,4 +1,4 @@
-import 'package:ecomly/src/product/presentation/views/search_view.dart';
+import 'package:buyghana/src/product/presentation/views/search_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconly/iconly.dart';

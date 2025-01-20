@@ -1,9 +1,9 @@
-import 'package:ecomly/core/common/widgets/app_bar_bottom.dart';
-import 'package:ecomly/core/extensions/text_style_extensions.dart';
-import 'package:ecomly/core/res/styles/colours.dart';
-import 'package:ecomly/core/res/styles/text.dart';
-import 'package:ecomly/src/auth/presentation/views/login_screen.dart';
-import 'package:ecomly/src/auth/presentation/widgets/registration_form.dart';
+import 'package:buyghana/core/common/widgets/app_bar_bottom.dart';
+import 'package:buyghana/core/extensions/text_style_extensions.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
+import 'package:buyghana/core/res/styles/text.dart';
+import 'package:buyghana/src/auth/presentation/views/login_screen.dart';
+import 'package:buyghana/src/auth/presentation/widgets/registration_form.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';

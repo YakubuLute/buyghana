@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/src/user/domain/entities/user.dart';
-import 'package:ecomly/src/user/domain/usecases/get_user.dart';
+import 'package:buyghana/src/user/domain/entities/user.dart';
+import 'package:buyghana/src/user/domain/usecases/get_user.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

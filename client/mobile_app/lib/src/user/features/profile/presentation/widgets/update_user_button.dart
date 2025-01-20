@@ -1,8 +1,8 @@
-import 'package:ecomly/core/common/singletons/cache.dart';
-import 'package:ecomly/core/common/widgets/rounded_button.dart';
-import 'package:ecomly/core/extensions/widget_extensions.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/user/presentation/app/auth_user_provider.dart';
+import 'package:buyghana/core/common/singletons/cache.dart';
+import 'package:buyghana/core/common/widgets/rounded_button.dart';
+import 'package:buyghana/core/extensions/widget_extensions.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/user/presentation/app/auth_user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

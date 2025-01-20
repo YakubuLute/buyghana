@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/user/domain/entities/address.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/user/domain/entities/address.dart';
 
 class AddressModel extends Address {
   const AddressModel({

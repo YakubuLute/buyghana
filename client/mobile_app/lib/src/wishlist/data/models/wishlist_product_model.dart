@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/wishlist/domain/entities/wishlist_product.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/wishlist/domain/entities/wishlist_product.dart';
 
 class WishlistProductModel extends WishlistProduct {
   const WishlistProductModel({

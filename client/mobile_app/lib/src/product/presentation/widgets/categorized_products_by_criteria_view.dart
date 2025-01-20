@@ -1,11 +1,11 @@
-import 'package:ecomly/core/common/widgets/classic_product_tile.dart';
-import 'package:ecomly/core/common/widgets/empty_data.dart';
-import 'package:ecomly/core/res/styles/colours.dart';
-import 'package:ecomly/core/utils/core_utils.dart';
-import 'package:ecomly/core/utils/enums/product_criteria_enum.dart';
-import 'package:ecomly/src/product/domain/entities/category.dart';
-import 'package:ecomly/src/product/presentation/app/category_riverpod_notifier/category_notifier.dart';
-import 'package:ecomly/src/product/presentation/app/product_riverpod_provider/product_provider.dart';
+import 'package:buyghana/core/common/widgets/classic_product_tile.dart';
+import 'package:buyghana/core/common/widgets/empty_data.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
+import 'package:buyghana/core/utils/core_utils.dart';
+import 'package:buyghana/core/utils/enums/product_criteria_enum.dart';
+import 'package:buyghana/src/product/domain/entities/category.dart';
+import 'package:buyghana/src/product/presentation/app/category_riverpod_notifier/category_notifier.dart';
+import 'package:buyghana/src/product/presentation/app/product_riverpod_provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

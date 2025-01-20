@@ -1,9 +1,9 @@
-import 'package:ecomly/core/common/app/riverpod/current_user_provider.dart';
-import 'package:ecomly/core/services/injection_container.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/user/domain/usecases/get_user.dart';
-import 'package:ecomly/src/user/domain/usecases/get_user_payment_profile.dart';
-import 'package:ecomly/src/user/domain/usecases/update_user.dart';
+import 'package:buyghana/core/common/app/riverpod/current_user_provider.dart';
+import 'package:buyghana/core/services/injection_container.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/user/domain/usecases/get_user.dart';
+import 'package:buyghana/src/user/domain/usecases/get_user_payment_profile.dart';
+import 'package:buyghana/src/user/domain/usecases/update_user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

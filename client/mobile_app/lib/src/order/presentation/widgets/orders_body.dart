@@ -1,10 +1,10 @@
-import 'package:ecomly/core/extensions/context_extensions.dart';
-import 'package:ecomly/core/extensions/text_style_extensions.dart';
-import 'package:ecomly/core/res/styles/colours.dart';
-import 'package:ecomly/core/res/styles/text.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/order/domain/entities/order.dart';
-import 'package:ecomly/src/order/presentation/widgets/order_tile.dart';
+import 'package:buyghana/core/extensions/context_extensions.dart';
+import 'package:buyghana/core/extensions/text_style_extensions.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
+import 'package:buyghana/core/res/styles/text.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/order/domain/entities/order.dart';
+import 'package:buyghana/src/order/presentation/widgets/order_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -43,7 +43,7 @@ class _OrdersBodyState extends State<OrdersBody> with TickerProviderStateMixin {
           data: context.theme.copyWith(
             // As suggested by https://stackoverflow.com/a/75573719/17971158
             colorScheme: context.theme.colorScheme.copyWith(
-              surfaceVariant: Colors.transparent,
+              surfaceContainerHighest: Colors.transparent,
             ),
           ),
           child: TabBar(

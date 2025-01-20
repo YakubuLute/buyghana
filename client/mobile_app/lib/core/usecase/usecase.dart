@@ -1,4 +1,4 @@
-import 'package:ecomly/core/utils/typedefs.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
 
 abstract class UsecaseWithParams<Type, Params> {
   const UsecaseWithParams();

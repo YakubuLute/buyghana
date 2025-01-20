@@ -1,4 +1,4 @@
-import 'package:ecomly/core/common/singletons/cache.dart';
+import 'package:buyghana/core/common/singletons/cache.dart';
 import 'package:flutter/material.dart';
 
 extension ContextExt on BuildContext {

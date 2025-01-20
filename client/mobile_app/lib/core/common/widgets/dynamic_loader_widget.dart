@@ -1,4 +1,4 @@
-import 'package:ecomly/core/res/styles/colours.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
 import 'package:flutter/material.dart';
 
 class DynamicLoaderWidget extends StatelessWidget {

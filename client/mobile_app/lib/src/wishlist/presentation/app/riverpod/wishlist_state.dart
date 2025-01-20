@@ -1,4 +1,4 @@
-import 'package:ecomly/src/wishlist/domain/entities/wishlist_product.dart';
+import 'package:buyghana/src/wishlist/domain/entities/wishlist_product.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class WishlistState extends Equatable {

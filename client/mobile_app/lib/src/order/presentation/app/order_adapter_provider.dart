@@ -1,8 +1,8 @@
-import 'package:ecomly/core/services/injection_container.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/order/domain/entities/order.dart';
-import 'package:ecomly/src/order/domain/usecases/get_order.dart';
-import 'package:ecomly/src/order/domain/usecases/get_user_orders.dart';
+import 'package:buyghana/core/services/injection_container.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/order/domain/entities/order.dart';
+import 'package:buyghana/src/order/domain/usecases/get_order.dart';
+import 'package:buyghana/src/order/domain/usecases/get_user_orders.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

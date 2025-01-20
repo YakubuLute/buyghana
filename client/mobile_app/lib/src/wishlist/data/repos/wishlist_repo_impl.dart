@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/core/errors/exceptions.dart';
-import 'package:ecomly/core/errors/failures.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/wishlist/data/datasources/wishlist_remote_data_src.dart';
-import 'package:ecomly/src/wishlist/domain/entities/wishlist_product.dart';
-import 'package:ecomly/src/wishlist/domain/repos/wishlist_repo.dart';
+import 'package:buyghana/core/errors/exceptions.dart';
+import 'package:buyghana/core/errors/failures.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/wishlist/data/datasources/wishlist_remote_data_src.dart';
+import 'package:buyghana/src/wishlist/domain/entities/wishlist_product.dart';
+import 'package:buyghana/src/wishlist/domain/repos/wishlist_repo.dart';
 
 class WishlistRepoImpl implements WishlistRepo {
   const WishlistRepoImpl(this._remoteDataSource);

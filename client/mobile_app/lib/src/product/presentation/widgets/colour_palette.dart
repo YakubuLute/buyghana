@@ -1,4 +1,4 @@
-import 'package:ecomly/core/extensions/colour_extensions.dart';
+import 'package:buyghana/core/extensions/colour_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 

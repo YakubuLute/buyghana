@@ -1,9 +1,9 @@
 import 'package:device_preview/device_preview.dart';
-import 'package:ecomly/core/common/app/cache_helper.dart';
-import 'package:ecomly/core/common/singletons/cache.dart';
-import 'package:ecomly/core/res/styles/colours.dart';
-import 'package:ecomly/core/services/injection_container.dart';
-import 'package:ecomly/core/services/router.dart';
+import 'package:buyghana/core/common/app/cache_helper.dart';
+import 'package:buyghana/core/common/singletons/cache.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
+import 'package:buyghana/core/services/injection_container.dart';
+import 'package:buyghana/core/services/router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,8 +41,9 @@ class App extends StatelessWidget {
         valueListenable: Cache.instance.themeModeNotifier,
         builder: (_, themeMode, __) {
           return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
             routerConfig: router,
-            title: 'Ecomly',
+            title: 'BuyGhana',
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
             themeMode: themeMode,

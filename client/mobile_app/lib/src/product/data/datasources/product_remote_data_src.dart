@@ -2,16 +2,16 @@
 
 import 'dart:convert';
 
-import 'package:ecomly/core/common/models/error_reponse.dart';
-import 'package:ecomly/core/common/singletons/cache.dart';
-import 'package:ecomly/core/errors/exceptions.dart';
-import 'package:ecomly/core/extensions/string_extensions.dart';
-import 'package:ecomly/core/utils/constants/network_constants.dart';
-import 'package:ecomly/core/utils/network_utils.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/product/data/models/category_model.dart';
-import 'package:ecomly/src/product/data/models/product_model.dart';
-import 'package:ecomly/src/product/data/models/review_model.dart';
+import 'package:buyghana/core/common/models/error_reponse.dart';
+import 'package:buyghana/core/common/singletons/cache.dart';
+import 'package:buyghana/core/errors/exceptions.dart';
+import 'package:buyghana/core/extensions/string_extensions.dart';
+import 'package:buyghana/core/utils/constants/network_constants.dart';
+import 'package:buyghana/core/utils/network_utils.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/product/data/models/category_model.dart';
+import 'package:buyghana/src/product/data/models/product_model.dart';
+import 'package:buyghana/src/product/data/models/review_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 

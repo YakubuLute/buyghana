@@ -1,8 +1,8 @@
-import 'package:ecomly/core/extensions/context_extensions.dart';
-import 'package:ecomly/core/extensions/text_style_extensions.dart';
-import 'package:ecomly/core/res/styles/colours.dart';
-import 'package:ecomly/core/res/styles/text.dart';
-import 'package:ecomly/core/services/router.dart';
+import 'package:buyghana/core/extensions/context_extensions.dart';
+import 'package:buyghana/core/extensions/text_style_extensions.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
+import 'package:buyghana/core/res/styles/text.dart';
+import 'package:buyghana/core/services/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 

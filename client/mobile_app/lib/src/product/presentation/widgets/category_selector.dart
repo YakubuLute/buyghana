@@ -1,10 +1,10 @@
-import 'package:ecomly/core/extensions/context_extensions.dart';
-import 'package:ecomly/core/extensions/text_style_extensions.dart';
-import 'package:ecomly/core/res/styles/colours.dart';
-import 'package:ecomly/core/res/styles/text.dart';
-import 'package:ecomly/core/utils/core_utils.dart';
-import 'package:ecomly/src/product/domain/entities/category.dart';
-import 'package:ecomly/src/product/presentation/app/product_riverpod_provider/product_provider.dart';
+import 'package:buyghana/core/extensions/context_extensions.dart';
+import 'package:buyghana/core/extensions/text_style_extensions.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
+import 'package:buyghana/core/res/styles/text.dart';
+import 'package:buyghana/core/utils/core_utils.dart';
+import 'package:buyghana/src/product/domain/entities/category.dart';
+import 'package:buyghana/src/product/presentation/app/product_riverpod_provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';

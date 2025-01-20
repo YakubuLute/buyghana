@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:ecomly/core/utils/enums/order_status_enum.dart';
+import 'package:buyghana/core/utils/enums/order_status_enum.dart';
 
 abstract class OrderUtils {
   static Color? getSpecialTimelineColour(

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/order/data/models/order_item_model.dart';
-import 'package:ecomly/src/order/domain/entities/order_item.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/order/data/models/order_item_model.dart';
+import 'package:buyghana/src/order/domain/entities/order_item.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../fixtures/fixture_reader.dart';

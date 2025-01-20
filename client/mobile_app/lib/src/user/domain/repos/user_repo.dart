@@ -1,5 +1,5 @@
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/user/domain/entities/user.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/user/domain/entities/user.dart';
 
 abstract class UserRepo {
   ResultFuture<User> getUser(String userId);

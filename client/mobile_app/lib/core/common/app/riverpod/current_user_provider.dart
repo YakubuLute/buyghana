@@ -1,4 +1,4 @@
-import 'package:ecomly/src/user/domain/entities/user.dart';
+import 'package:buyghana/src/user/domain/entities/user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'current_user_provider.g.dart';

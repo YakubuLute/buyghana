@@ -1,7 +1,7 @@
-import 'package:ecomly/core/common/singletons/cache.dart';
-import 'package:ecomly/core/extensions/string_extensions.dart';
-import 'package:ecomly/core/extensions/theme_mode_extensions.dart';
-import 'package:ecomly/core/utils/core_utils.dart';
+import 'package:buyghana/core/common/singletons/cache.dart';
+import 'package:buyghana/core/extensions/string_extensions.dart';
+import 'package:buyghana/core/extensions/theme_mode_extensions.dart';
+import 'package:buyghana/core/utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

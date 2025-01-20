@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:ecomly/core/extensions/colour_extensions.dart';
-import 'package:ecomly/core/extensions/string_extensions.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/order/domain/entities/order_item.dart';
+import 'package:buyghana/core/extensions/colour_extensions.dart';
+import 'package:buyghana/core/extensions/string_extensions.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/order/domain/entities/order_item.dart';
 
 class OrderItemModel extends OrderItem {
   const OrderItemModel({

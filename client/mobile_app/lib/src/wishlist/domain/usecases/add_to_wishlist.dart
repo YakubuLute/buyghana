@@ -1,6 +1,6 @@
-import 'package:ecomly/core/usecase/usecase.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/wishlist/domain/repos/wishlist_repo.dart';
+import 'package:buyghana/core/usecase/usecase.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/wishlist/domain/repos/wishlist_repo.dart';
 import 'package:equatable/equatable.dart';
 
 class AddToWishlist extends UsecaseWithParams<void, AddToWishlistParams> {

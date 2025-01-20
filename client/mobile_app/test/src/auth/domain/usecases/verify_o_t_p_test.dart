@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/src/auth/domain/usecases/verify_o_t_p.dart';
+import 'package:buyghana/src/auth/domain/usecases/verify_o_t_p.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

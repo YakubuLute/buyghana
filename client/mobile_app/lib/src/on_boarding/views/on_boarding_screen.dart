@@ -1,4 +1,4 @@
-import 'package:ecomly/src/on_boarding/widgets/on_boarding_info_section.dart';
+import 'package:buyghana/src/on_boarding/widgets/on_boarding_info_section.dart';
 import 'package:flutter/material.dart';
 
 class OnBoardingScreen extends StatefulWidget {

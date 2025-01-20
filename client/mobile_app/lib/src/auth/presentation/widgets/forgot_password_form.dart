@@ -1,10 +1,10 @@
-import 'package:ecomly/core/common/widgets/rounded_button.dart';
-import 'package:ecomly/core/common/widgets/vertical_label_field.dart';
-import 'package:ecomly/core/extensions/widget_extensions.dart';
-import 'package:ecomly/core/services/router.dart';
-import 'package:ecomly/core/utils/core_utils.dart';
-import 'package:ecomly/src/auth/presentation/app/riverpod/auth_provider.dart';
-import 'package:ecomly/src/auth/presentation/views/verify_otp_screen.dart';
+import 'package:buyghana/core/common/widgets/rounded_button.dart';
+import 'package:buyghana/core/common/widgets/vertical_label_field.dart';
+import 'package:buyghana/core/extensions/widget_extensions.dart';
+import 'package:buyghana/core/services/router.dart';
+import 'package:buyghana/core/utils/core_utils.dart';
+import 'package:buyghana/src/auth/presentation/app/riverpod/auth_provider.dart';
+import 'package:buyghana/src/auth/presentation/views/verify_otp_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';

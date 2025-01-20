@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:ecomly/core/errors/exceptions.dart';
-import 'package:ecomly/core/errors/failures.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/auth/data/datasources/auth_remote_data_src.dart';
-import 'package:ecomly/src/auth/domain/repos/auth_repo.dart';
-import 'package:ecomly/src/user/domain/entities/user.dart';
+import 'package:buyghana/core/errors/exceptions.dart';
+import 'package:buyghana/core/errors/failures.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/auth/data/datasources/auth_remote_data_src.dart';
+import 'package:buyghana/src/auth/domain/repos/auth_repo.dart';
+import 'package:buyghana/src/user/domain/entities/user.dart';
 
 class AuthRepoImpl implements AuthRepo {
   const AuthRepoImpl(this._remoteDataSource);

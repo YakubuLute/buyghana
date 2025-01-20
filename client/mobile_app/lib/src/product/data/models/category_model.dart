@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/product/domain/entities/category.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/product/domain/entities/category.dart';
 
 class ProductCategoryModel extends ProductCategory {
   const ProductCategoryModel({

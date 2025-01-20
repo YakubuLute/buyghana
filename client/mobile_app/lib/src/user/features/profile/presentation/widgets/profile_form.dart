@@ -1,7 +1,7 @@
-import 'package:ecomly/core/common/app/riverpod/current_user_provider.dart';
-import 'package:ecomly/core/common/widgets/vertical_label_field.dart';
-import 'package:ecomly/core/utils/typedefs.dart';
-import 'package:ecomly/src/user/domain/entities/user.dart';
+import 'package:buyghana/core/common/app/riverpod/current_user_provider.dart';
+import 'package:buyghana/core/common/widgets/vertical_label_field.dart';
+import 'package:buyghana/core/utils/typedefs.dart';
+import 'package:buyghana/src/user/domain/entities/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
