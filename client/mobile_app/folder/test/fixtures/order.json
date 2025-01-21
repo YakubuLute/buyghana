@@ -1,0 +1,13 @@
+{
+  "id": "Test String",
+  "orderItems": [
+    {
+      "id": "Test String",
+      "productName": "Test String",
+      "productImage": "Test String"
+    }
+  ],
+  "status": "pending",
+  "totalPrice": 1,
+  "dateOrdered": "2023-12-04T20:45:40.426"
+}
