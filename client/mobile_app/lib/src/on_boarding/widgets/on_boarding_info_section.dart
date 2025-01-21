@@ -24,68 +24,71 @@ class OnBoardingInfoSection extends StatelessWidget {
       darkModeColour: Colors.white,
       lightModeColour: Colours.lightThemePrimaryTextColour,
     );
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: AlignmentDirectional.center,
-      children: [
-        Image.asset(first ? Media.onBoardingFemale : Media.onBoardingMale),
-        Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            if (first)
-              Text.rich(
-                textAlign: TextAlign.left,
-                TextSpan(
-                    text: '2024\n',
-                    style: TextStyles.headingBold.orange,
+    return SafeArea(
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: AlignmentDirectional.center,
+        children: [
+          Image.asset(first ? Media.onBoardingFemale : Media.onBoardingMale),
+          Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (first)
+                Text.rich(
+                  textAlign: TextAlign.left,
+                  TextSpan(
+                      text: '2024\n',
+                      style: TextStyles.headingBold.orange,
+                      children: [
+                        TextSpan(
+                          text: 'Winter Sale is Live now.',
+                          style: TextStyle(
+                            color: adaptiveColour,
+                          ),
+                        )
+                      ]),
+                )
+              else
+                Text.rich(
+                  textAlign: TextAlign.left,
+                  TextSpan(
+                    text: 'Flash Sale\n',
+                    style: TextStyles.headingBold.copyWith(
+                      color: adaptiveColour,
+                    ),
                     children: [
-                      TextSpan(
-                        text: 'Winter Sale is Live now.',
+                      const TextSpan(
+                        text: "Men's ",
                         style: TextStyle(
-                          color: adaptiveColour,
+                          color: Colours.lightThemeSecondaryColour,
                         ),
-                      )
-                    ]),
-              )
-            else
-              Text.rich(
-                textAlign: TextAlign.left,
-                TextSpan(
-                  text: 'Flash Sale\n',
-                  style: TextStyles.headingBold.copyWith(
-                    color: adaptiveColour,
+                      ),
+                      TextSpan(
+                        text: 'Shirts & Watches',
+                        style: TextStyle(
+                          color: CoreUtils.adaptiveColour(
+                            context,
+                            darkModeColour: Colors.white,
+                            lightModeColour:
+                                Colours.lightThemePrimaryTextColour,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  children: [
-                    const TextSpan(
-                      text: "Men's ",
-                      style: TextStyle(
-                        color: Colours.lightThemeSecondaryColour,
-                      ),
-                    ),
-                    TextSpan(
-                      text: 'Shirts & Watches',
-                      style: TextStyle(
-                        color: CoreUtils.adaptiveColour(
-                          context,
-                          darkModeColour: Colors.white,
-                          lightModeColour: Colours.lightThemePrimaryTextColour,
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
+              RoundedButton(
+                text: 'Get Started',
+                onPressed: () {
+                  sl<CacheHelper>().cacheFirstTimer();
+                  context.go(LoginScreen.path);
+                },
               ),
-            RoundedButton(
-              text: 'Get Started',
-              onPressed: () {
-                sl<CacheHelper>().cacheFirstTimer();
-                context.go(LoginScreen.path);
-              },
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

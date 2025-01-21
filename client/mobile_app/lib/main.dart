@@ -41,6 +41,7 @@ class App extends StatelessWidget {
         valueListenable: Cache.instance.themeModeNotifier,
         builder: (_, themeMode, __) {
           return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
             routerConfig: router,
             title: 'BuyGhana',
             locale: DevicePreview.locale(context),
