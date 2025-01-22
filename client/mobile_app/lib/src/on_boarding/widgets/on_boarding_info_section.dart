@@ -30,63 +30,72 @@ class OnBoardingInfoSection extends StatelessWidget {
         alignment: AlignmentDirectional.center,
         children: [
           Image.asset(first ? Media.onBoardingFemale : Media.onBoardingMale),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              if (first)
-                Text.rich(
-                  textAlign: TextAlign.left,
-                  TextSpan(
-                      text: 'Buy Ghana\n',
-                      style: TextStyles.headingBold.orange,
-                      children: [
-                        TextSpan(
-                          text: 'Enjoy the best sales now',
-                          style: TextStyle(
-                            color: adaptiveColour,
-                            
-                          ),
-                        )
-                      ]),
-                )
-              else
-                Text.rich(
-                  textAlign: TextAlign.left,
-                  TextSpan(
-                    text: 'Flash Sale\n',
-                    style: TextStyles.headingBold.copyWith(
-                      color: adaptiveColour,
-                    ),
-                    children: [
-                      const TextSpan(
-                        text: "Men's ",
-                        style: TextStyle(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (first)
+                  Text.rich(
+                    textAlign: TextAlign.left,
+                    TextSpan(
+                        text: 'Buy Ghana\n',
+                        style: TextStyles.headingBold.copyWith(
                           color: Colours.lightThemeSecondaryColour,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
                         ),
+                        children: [
+                          TextSpan(
+                            text:
+                                'Enjoy the best sales of made in Ghana products',
+                            style: TextStyle(
+                              color: adaptiveColour,
+                              fontSize: 34,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          )
+                        ]),
+                  )
+                else
+                  Text.rich(
+                    textAlign: TextAlign.left,
+                    TextSpan(
+                      text: 'Flash Sale\n',
+                      style: TextStyles.headingBold.copyWith(
+                        color: adaptiveColour,
                       ),
-                      TextSpan(
-                        text: 'Shirts & Watches',
-                        style: TextStyle(
-                          color: CoreUtils.adaptiveColour(
-                            context,
-                            darkModeColour: Colors.white,
-                            lightModeColour:
-                                Colours.lightThemePrimaryTextColour,
+                      children: [
+                        const TextSpan(
+                          text: "Men's ",
+                          style: TextStyle(
+                            color: Colours.lightThemeSecondaryColour,
                           ),
                         ),
-                      ),
-                    ],
+                        TextSpan(
+                          text: 'Shirts & Watches',
+                          style: TextStyle(
+                            color: CoreUtils.adaptiveColour(
+                              context,
+                              darkModeColour: Colors.white,
+                              lightModeColour:
+                                  Colours.lightThemePrimaryTextColour,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                RoundedButton(
+                  text: 'Get Started',
+                  onPressed: () {
+                    sl<CacheHelper>().cacheFirstTimer();
+                    context.go(LoginScreen.path);
+                  },
                 ),
-              RoundedButton(
-                text: 'Get Started',
-                onPressed: () {
-                  sl<CacheHelper>().cacheFirstTimer();
-                  context.go(LoginScreen.path);
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
