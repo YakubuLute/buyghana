@@ -38,13 +38,14 @@ class OnBoardingInfoSection extends StatelessWidget {
                 Text.rich(
                   textAlign: TextAlign.left,
                   TextSpan(
-                      text: '2024\n',
+                      text: 'Buy Ghana\n',
                       style: TextStyles.headingBold.orange,
                       children: [
                         TextSpan(
-                          text: 'Winter Sale is Live now.',
+                          text: 'Enjoy the best sales now',
                           style: TextStyle(
                             color: adaptiveColour,
+                            
                           ),
                         )
                       ]),

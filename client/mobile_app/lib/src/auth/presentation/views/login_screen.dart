@@ -19,7 +19,7 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Sign In',
+          'Sign In To Continue',
           style: TextStyles.headingSemiBold,
         ),
         bottom: const AppBarBottom(),
@@ -34,7 +34,7 @@ class LoginScreen extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
                 children: [
                   Text(
-                    'Hello!!',
+                    'Welcome Back!',
                     style: TextStyles.headingBold3.adaptiveColour(context),
                   ),
                   Text(
