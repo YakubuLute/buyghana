@@ -17,13 +17,6 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Sign In To Continue',
-          style: TextStyles.headingSemiBold,
-        ),
-        bottom: const AppBarBottom(),
-      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -38,7 +31,7 @@ class LoginScreen extends StatelessWidget {
                     style: TextStyles.headingBold3.adaptiveColour(context),
                   ),
                   Text(
-                    'Sign in with your account details',
+                    'Sign in with your account details.',
                     style: TextStyles.paragraphSubTextRegular1.grey,
                   ),
                   const Gap(40),

@@ -1,6 +1,5 @@
 import 'package:buyghana/core/common/app/cache_helper.dart';
 import 'package:buyghana/core/common/widgets/rounded_button.dart';
-import 'package:buyghana/core/extensions/text_style_extensions.dart';
 import 'package:buyghana/core/res/media.dart';
 import 'package:buyghana/core/res/styles/colours.dart';
 import 'package:buyghana/core/res/styles/text.dart';
