@@ -30,7 +30,7 @@ class OnBoardingInfoSection extends StatelessWidget {
         children: [
           // Image.asset(first ? Media.onBoardingFemale : Media.onBoardingMale),
           Image(
-            image: AssetImage('assets/images/lute.jpg'),
+            image: AssetImage('/assets/images/lute.jpg'),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),

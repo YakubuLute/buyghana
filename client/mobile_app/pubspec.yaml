@@ -53,10 +53,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-assets:
-  - assets/images/
-  - assets/images/lute.jpg
-  - assets/lottie/
+  assets:
+    - assets/images/
+    - assets/images/lute.jpg
+    - assets/lottie/
 
 fonts:
   - family: Switzer
