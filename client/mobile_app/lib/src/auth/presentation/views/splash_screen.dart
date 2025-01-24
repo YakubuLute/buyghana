@@ -72,7 +72,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Ecomly(),
+                  const BuyGhana(),
                   if (shouldRedirect) ...[
                     const Gap(20),
                     ElevatedButton(

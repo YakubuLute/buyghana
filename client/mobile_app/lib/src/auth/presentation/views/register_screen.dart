@@ -29,7 +29,7 @@ class RegisterScreen extends StatelessWidget {
                   style: TextStyles.headingBold3.adaptiveColour(context),
                 ),
                 Text(
-                  'Create a new Ecomly account',
+                  'Create a new BuyGhana account',
                   style: TextStyles.paragraphSubTextRegular1.grey,
                 ),
                 const Gap(40),

@@ -28,7 +28,10 @@ class OnBoardingInfoSection extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: AlignmentDirectional.center,
         children: [
-          Image.asset(first ? Media.onBoardingFemale : Media.onBoardingMale),
+          // Image.asset(first ? Media.onBoardingFemale : Media.onBoardingMale),
+          Image(
+            image: AssetImage('assets/images/lute.jpg'),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(

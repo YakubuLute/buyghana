@@ -55,6 +55,7 @@ flutter:
 
 assets:
   - assets/images/
+  - assets/images/lute.jpg
   - assets/lottie/
 
 fonts:

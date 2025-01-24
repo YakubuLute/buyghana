@@ -19,7 +19,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: const MenuIcon(),
       centerTitle: false,
       titleSpacing: 0,
-      title: Ecomly(
+      title: BuyGhana(
         style: TextStyles.headingSemiBold.copyWith(
           color: CoreUtils.adaptiveColour(
             context,
