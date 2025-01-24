@@ -18,7 +18,7 @@ class ForgotPasswordScreen extends StatelessWidget {
           'Forgot Password',
           style: TextStyles.headingSemiBold,
         ),
-        bottom: const AppBarBottom(),
+        // bottom: const AppBarBottom(),
       ),
       body: ListView(
         shrinkWrap: true,
@@ -29,7 +29,7 @@ class ForgotPasswordScreen extends StatelessWidget {
             style: TextStyles.headingBold3.adaptiveColour(context),
           ),
           Text(
-            'Enter the email address associated with your account',
+            'Enter the email address associated with your account.',
             style: TextStyles.paragraphSubTextRegular1.grey,
           ),
           const Gap(40),
