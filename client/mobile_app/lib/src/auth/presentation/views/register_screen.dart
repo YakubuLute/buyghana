@@ -1,4 +1,3 @@
-import 'package:buyghana/core/common/widgets/app_bar_bottom.dart';
 import 'package:buyghana/core/extensions/text_style_extensions.dart';
 import 'package:buyghana/core/res/styles/colours.dart';
 import 'package:buyghana/core/res/styles/text.dart';
@@ -16,50 +15,48 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                shrinkWrap: true,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-                children: [
-                  Text(
-                    'Create an Account',
-                    style: TextStyles.headingBold3.adaptiveColour(context),
-                  ),
-                  Text(
-                    'Create a new Ecomly account',
-                    style: TextStyles.paragraphSubTextRegular1.grey,
-                  ),
-                  const Gap(40),
-                  const RegistrationForm(),
-                ],
-              ),
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              shrinkWrap: true,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+              children: [
+                Text(
+                  'Create an Account',
+                  style: TextStyles.headingBold3.adaptiveColour(context),
+                ),
+                Text(
+                  'Create a new Ecomly account',
+                  style: TextStyles.paragraphSubTextRegular1.grey,
+                ),
+                const Gap(40),
+                const RegistrationForm(),
+              ],
             ),
-            const Gap(8),
-            RichText(
-              text: TextSpan(
-                text: "Already have an account? ",
-                style: TextStyles.paragraphSubTextRegular3.grey,
-                children: [
-                  TextSpan(
-                    text: 'Sign In',
-                    style:
-                        const TextStyle(color: Colours.lightThemePrimaryColour),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        context.go(LoginScreen.path);
-                      },
-                  ),
-                ],
-              ),
+          ),
+          const Gap(8),
+          RichText(
+            text: TextSpan(
+              text: "Already have an account? ",
+              style: TextStyles.paragraphSubTextRegular3.grey,
+              children: [
+                TextSpan(
+                  text: 'Sign In',
+                  style:
+                      const TextStyle(color: Colours.lightThemePrimaryColour),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      context.go(LoginScreen.path);
+                    },
+                ),
+              ],
             ),
-            const Gap(16),
-          ],
-        ),
+          ),
+          const Gap(16),
+        ],
       ),
     );
   }
