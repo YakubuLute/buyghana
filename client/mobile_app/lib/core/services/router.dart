@@ -13,6 +13,7 @@ import 'package:buyghana/src/cart/presentation/views/checkout_view.dart';
 import 'package:buyghana/src/dashboard/presentation/views/dashboard_screen.dart';
 import 'package:buyghana/src/explore/presentation/views/explore_view.dart';
 import 'package:buyghana/src/home/presentation/views/home_view.dart';
+import 'package:buyghana/src/on_boarding/views/on_boarding.dart';
 import 'package:buyghana/src/on_boarding/views/on_boarding_screen.dart';
 import 'package:buyghana/src/order/presentation/views/order_details_view.dart';
 import 'package:buyghana/src/order/presentation/views/orders_view.dart';
