@@ -1,5 +1,7 @@
 import 'package:buyghana/core/common/app/on_boarding_text.dart';
 import 'package:buyghana/core/res/media.dart';
+import 'package:buyghana/core/res/styles/colours.dart';
+import 'package:buyghana/core/utils/core_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -11,7 +13,12 @@ class OnBoarding extends StatelessWidget {
     // get the full screen size for height and width
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
+    final pageController = PageController();
+    final adaptiveColour = CoreUtils.adaptiveColour(
+      context,
+      darkModeColour: Colors.white,
+      lightModeColour: Colours.lightThemePrimaryTextColour,
+    );
     return Scaffold(
         body: Stack(
       children: [
@@ -50,10 +57,10 @@ class OnBoarding extends StatelessWidget {
           bottom: 20,
           left: 20,
           child: SmoothPageIndicator(
-            controller: PageController(),
+            controller: pageController,
             count: 3,
-            effect:
-                ExpandingDotsEffect(activeDotColor: Colors.teal, dotHeight: 6),
+            effect: ExpandingDotsEffect(
+                activeDotColor: adaptiveColour, dotHeight: 6),
           ),
         ),
         Positioned(
@@ -61,7 +68,7 @@ class OnBoarding extends StatelessWidget {
           left: screenWidth * 0.7,
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal, shape: CircleBorder()),
+                backgroundColor: adaptiveColour, shape: CircleBorder()),
             onPressed: () {},
             icon: const Icon(Icons.arrow_forward),
             label: const Text('Continue'),
