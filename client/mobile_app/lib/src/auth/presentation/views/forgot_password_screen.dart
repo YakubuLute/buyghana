@@ -1,4 +1,3 @@
-import 'package:buyghana/core/common/widgets/app_bar_bottom.dart';
 import 'package:buyghana/core/extensions/text_style_extensions.dart';
 import 'package:buyghana/core/res/styles/text.dart';
 import 'package:buyghana/src/auth/presentation/widgets/forgot_password_form.dart';
