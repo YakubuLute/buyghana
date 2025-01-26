@@ -7,7 +7,7 @@ abstract class Media {
   static const onBoardingFemale = '$_baseImagePath/on_boarding_female.png';
   static const onBoardingMale = '$_baseImagePath/on_boarding_male.png';
   static const user = '$_baseImagePath/user.png';
-  static const lute = '$_baseImagePath/lute.jpg';
+  static const logo = '$_baseImagePath/logo.png';
 
   static const search = '$_baseLottiePath/search.json';
   static const searchLight = '$_baseLottiePath/search_light.json';

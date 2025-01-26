@@ -1,4 +1,5 @@
 import 'package:buyghana/core/extensions/text_style_extensions.dart';
+import 'package:buyghana/core/res/media.dart';
 import 'package:buyghana/core/res/styles/colours.dart';
 import 'package:buyghana/core/res/styles/text.dart';
 import 'package:buyghana/src/auth/presentation/views/register_screen.dart';
@@ -19,22 +20,30 @@ class LoginScreen extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-              children: [
-                Text(
-                  'Welcome Back!',
-                  style: TextStyles.headingBold3.adaptiveColour(context),
-                ),
-                Text(
-                  'Sign in with your account details.',
-                  style: TextStyles.paragraphSubTextRegular1.grey,
-                ),
-                const Gap(40),
-                const LoginForm(),
-              ],
+            child: Center(
+              child: ListView(
+                shrinkWrap: true,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+                children: [
+                  Image.asset(
+                    Media.logo,
+                    height: 100,
+                  ),
+                  Text(
+                    'Welcome Back!',
+                    textAlign: TextAlign.center,
+                    style: TextStyles.headingBold3.adaptiveColour(context),
+                  ),
+                  Text(
+                    'Sign in with your account details.',
+                    textAlign: TextAlign.center,
+                    style: TextStyles.paragraphSubTextRegular1.grey,
+                  ),
+                  const Gap(40),
+                  const LoginForm(),
+                ],
+              ),
             ),
           ),
           const Gap(8),
