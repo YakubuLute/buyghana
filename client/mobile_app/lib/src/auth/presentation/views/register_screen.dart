@@ -1,5 +1,5 @@
-import 'package:buyghana/core/common/widgets/app_bar_bottom.dart';
 import 'package:buyghana/core/extensions/text_style_extensions.dart';
+import 'package:buyghana/core/res/media.dart';
 import 'package:buyghana/core/res/styles/colours.dart';
 import 'package:buyghana/core/res/styles/text.dart';
 import 'package:buyghana/src/auth/presentation/views/login_screen.dart';
@@ -18,11 +18,22 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Sign Up',
-          style: TextStyles.headingSemiBold,
+        elevation: 2,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go(LoginScreen.path);
+          },
         ),
-        bottom: const AppBarBottom(),
+        title: Text('Register',
+            style: TextStyles.headingBold1.adaptiveColour(context)),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            onPressed: () => {},
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -32,14 +43,16 @@ class RegisterScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
               children: [
                 Text(
-                  'Create an Account',
+                  'Getting Started',
+                  // textAlign: TextAlign.center,
                   style: TextStyles.headingBold3.adaptiveColour(context),
                 ),
                 Text(
-                  'Create a new Ecomly account',
+                  "Let's create you an account",
+                  // textAlign: TextAlign.center,
                   style: TextStyles.paragraphSubTextRegular1.grey,
                 ),
-                const Gap(40),
+                const Gap(20),
                 const RegistrationForm(),
               ],
             ),

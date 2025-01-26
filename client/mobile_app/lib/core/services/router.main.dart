@@ -50,6 +50,7 @@ final router = GoRouter(
     GoRoute(
       path: LoginScreen.path,
       builder: (context, state) => const LoginScreen(),
+      // builder: (context, state) => const OnBoarding(),
     ),
     GoRoute(
       path: RegisterScreen.path,

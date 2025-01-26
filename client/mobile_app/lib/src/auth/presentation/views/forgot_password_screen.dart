@@ -1,4 +1,3 @@
-import 'package:buyghana/core/common/widgets/app_bar_bottom.dart';
 import 'package:buyghana/core/extensions/text_style_extensions.dart';
 import 'package:buyghana/core/res/styles/text.dart';
 import 'package:buyghana/src/auth/presentation/widgets/forgot_password_form.dart';
@@ -18,7 +17,7 @@ class ForgotPasswordScreen extends StatelessWidget {
           'Forgot Password',
           style: TextStyles.headingSemiBold,
         ),
-        bottom: const AppBarBottom(),
+        // bottom: const AppBarBottom(),
       ),
       body: ListView(
         shrinkWrap: true,
@@ -29,7 +28,7 @@ class ForgotPasswordScreen extends StatelessWidget {
             style: TextStyles.headingBold3.adaptiveColour(context),
           ),
           Text(
-            'Enter the email address associated with your account',
+            'Enter the email address associated with your account.',
             style: TextStyles.paragraphSubTextRegular1.grey,
           ),
           const Gap(40),
