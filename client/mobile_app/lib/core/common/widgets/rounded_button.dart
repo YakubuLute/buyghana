@@ -23,12 +23,12 @@ class RoundedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height ?? 66,
+      height: height ?? 55,
       width: double.maxFinite,
       child: FilledButton(
         style: FilledButton.styleFrom(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(14),
           ),
           backgroundColor: backgroundColour,
           padding: padding,

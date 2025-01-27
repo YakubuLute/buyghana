@@ -1,3 +1,5 @@
+import 'package:buyghana/core/extensions/text_style_extensions.dart';
+import 'package:buyghana/core/res/styles/text.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:buyghana/core/common/widgets/input_field.dart';
 import 'package:buyghana/core/common/widgets/rounded_button.dart';
@@ -31,6 +33,7 @@ class _RegistrationFormState extends ConsumerState<RegistrationForm> {
   final obscureConfirmPasswordNotifier = ValueNotifier(true);
 
   final countryNotifier = ValueNotifier<Country?>(null);
+  bool checked = false;
 
   void pickCountry() {
     AuthUtils.pickCountry(context, onSelect: (country) {
@@ -191,6 +194,28 @@ class _RegistrationFormState extends ConsumerState<RegistrationForm> {
             },
           ),
           const Gap(40),
+          // agree to terms and conditions
+          Row(
+            children: [
+              Checkbox(
+                value: checked,
+                onChanged: (bool? value) {
+                  setState(() {
+                    checked = value!;
+                  });
+                  print(checked);
+                },
+              ),
+              SizedBox(width: 8),
+              Text(
+                'I agree to the terms and conditions',
+                style: TextStyles.paragraphSubTextRegular1.grey,
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          // submit button
+
           RoundedButton(
             onPressed: () async {
               if (formKey.currentState!.validate()) {
@@ -210,7 +235,7 @@ class _RegistrationFormState extends ConsumerState<RegistrationForm> {
                     );
               }
             },
-            text: 'Sign Up',
+            text: 'Register',
           ).loading(auth is AuthLoading),
         ],
       ),

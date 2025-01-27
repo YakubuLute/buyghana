@@ -97,7 +97,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                   },
                   child: Text(
                     'Forgot Password?',
-                    style: TextStyles.paragraphSubTextRegular2.primary,
+                    style: TextStyles.paragraphSubTextRegularBold2.primary,
                   ),
                 )),
           ),

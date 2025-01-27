@@ -1,4 +1,5 @@
 import 'package:buyghana/core/extensions/text_style_extensions.dart';
+import 'package:buyghana/core/res/media.dart';
 import 'package:buyghana/core/res/styles/colours.dart';
 import 'package:buyghana/core/res/styles/text.dart';
 import 'package:buyghana/src/auth/presentation/views/login_screen.dart';
@@ -21,18 +22,19 @@ class RegisterScreen extends StatelessWidget {
           Expanded(
             child: ListView(
               shrinkWrap: true,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
               children: [
                 Text(
                   'Create an Account',
+                  textAlign: TextAlign.center,
                   style: TextStyles.headingBold3.adaptiveColour(context),
                 ),
                 Text(
-                  'Create a new BuyGhana account',
+                  'Create a new BuyFromGh account',
+                  textAlign: TextAlign.center,
                   style: TextStyles.paragraphSubTextRegular1.grey,
                 ),
-                const Gap(40),
+                const Gap(20),
                 const RegistrationForm(),
               ],
             ),
