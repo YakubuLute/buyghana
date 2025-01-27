@@ -27,7 +27,7 @@ dotenv.config()
 
 // Validate required environment variables
 const validateEnvVariables = () => {
-  const required = ['PORT', 'API_PREFIX', 'JWT_SECRET', 'MONGODB_URI']
+  const required = ['PORT', 'API_PREFIX']
   const missing = required.filter(key => !process.env[key])
   if (missing.length > 0) {
     throw new Error(
@@ -68,7 +68,7 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
 
-// Stripe Webhook Configuration (must be before body parser)
+// Stripe Webhook Configuration
 app.use(
   `${API_PREFIX}/checkout/webhook`,
   express.raw({ type: 'application/json', limit: '10kb' })
@@ -144,7 +144,7 @@ app.get('/', (req: Request, res: Response) => {
   res.status(200).json({
     message: 'BuyGhana API Server',
     version: '1.0.0',
-    documentation: '/api/docs' // If you add API documentation later
+    documentation: '/api/docs' // TODO: Add a documentation route and controllers
   })
 })
 
@@ -157,7 +157,7 @@ app.use((req: Request, res: Response) => {
 })
 
 // Global Error Handler
-const globalErrorHandler: ErrorRequestHandler = (err, req, res, next): void => {
+const globalErrorHandler: ErrorRequestHandler = (err, req, res, next): any => {
   // Prevent multiple responses
   if (res.headersSent) {
     return next(err)
@@ -274,8 +274,8 @@ const startServer = async () => {
     }
 
     // Shutdown Handlers
-  process.on('SIGTERM', gracefulShutdown)
-process.on('SIGINT', gracefulShutdown)
+    process.on('SIGTERM', gracefulShutdown)
+    process.on('SIGINT', gracefulShutdown)
 
     process.on('unhandledRejection', (reason, promise) => {
       console.error('Unhandled Rejection at:', promise, 'reason:', reason)
