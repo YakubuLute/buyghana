@@ -6,6 +6,7 @@ import { sendEmail } from '../utils/email'
 import { generateOTP } from '../utils/otp'
 import { CustomError, ITokenSchema, TokenPayload } from '../Interface/interface'
 import { Token } from '../models/token-schema'
+import mongoose from 'mongoose'
 interface ResetTokenPayload {
   userId: string
   email: string
@@ -13,14 +14,29 @@ interface ResetTokenPayload {
 }
 
 export const register = async (req: Request, res: Response): Promise<void> => {
+  // Start a session outside the try block so we can access it in the finally block
+  const session = await mongoose.startSession()
+
   try {
     const { name, email, password, phone } = req.body
+    console.log('Print the body', req.body)
 
+    // Basic input validation
+    if (!name?.trim() || !email?.trim() || !password || !phone?.trim()) {
+      res.status(400).json({ error: 'All fields are required' })
+      return
+    }
+
+    // Start the transaction
+    session.startTransaction()
+
+    // Check for existing user within the transaction
     const existingUser = await User.findOne({
       $or: [{ email: email.toLowerCase() }, { phone }]
-    })
+    }).session(session)
 
     if (existingUser) {
+      await session.abortTransaction()
       res.status(400).json({
         error:
           existingUser.email === email.toLowerCase()
@@ -30,16 +46,16 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return
     }
 
+    // Hash password and generate OTP
     const salt = await bcrypt.genSalt(12)
     const passwordHash = await bcrypt.hash(password, salt)
-
     const accountVerificationOTP = generateOTP(6)
     const accountVerificationOTPExpiration = new Date(
-      Date.now() + 5 * 60 * 1000 // verification expiration time is 5 minutes
+      Date.now() + 5 * 60 * 1000
     )
 
+    // Create new user document
     const user = new User({
-      ...req.body,
       name: name.trim(),
       email: email.toLowerCase().trim(),
       passwordHash,
@@ -49,35 +65,47 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       isVerified: false
     })
 
-    await user.save()
+    // Save the user within the transaction
+    await user.save({ session })
 
+    // Send verification email
     await sendEmail({
       to: email,
       subject: 'Verify Your Account',
       text: `Your verification code is: ${accountVerificationOTP}. Valid for 5 minutes.`
     })
 
+    await session.commitTransaction()
+
+    // Send success response
     res.status(201).json({
       message:
         'User registered successfully. Please check your email for verification.',
       userId: user._id
     })
-  } catch (error) {
-    const err = error as CustomError
-    if (err.code === 11000) {
-      const keyPattern = err.keyPattern
-      const duplicateField = keyPattern && Object.keys(keyPattern)[0]
+  } catch (error: any) {
+    console.error('Registration error:', error)
+
+    if (session.inTransaction()) {
+      await session.abortTransaction()
+    }
+
+    // Handle different types of errors
+    if (error.code === 11000) {
       res.status(400).json({
-        error: duplicateField
-          ? `${
-              duplicateField?.charAt(0).toUpperCase() + duplicateField?.slice(1)
-            } already registered`
-          : "There's a duplicate field already registered"
+        error: 'A user with this email or phone number already exists'
       })
       return
     }
-    console.error('Registration error:', error)
-    res.status(500).json({ error: 'Internal server error' })
+
+    // Handle any other errors
+    if (!res.headersSent) {
+      res.status(500).json({
+        error: 'Registration failed. Please try again later.'
+      })
+    }
+  } finally {
+    await session.endSession()
   }
 }
 
@@ -325,7 +353,6 @@ export const resetPassword = async (
     })
   }
 }
-
 
 export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
   try {

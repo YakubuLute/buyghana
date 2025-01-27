@@ -26,7 +26,7 @@ const router = express.Router()
 router.post('/register', validateUser, handleValidation, register)
 router.post('/login', validateLogin, handleValidation, login)
 router.post(
-  '/forgot-password',
+  'forgot-password',
   validateForgotPassword,
   handleValidation,
   forgotPassword
