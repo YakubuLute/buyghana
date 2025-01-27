@@ -1,15 +1,16 @@
 import express, { Request, Response, NextFunction } from 'express'
 import dotenv from 'dotenv'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
+import compression from 'compression'
 import bodyParser from 'body-parser'
 import morgan from 'morgan'
 import cors from 'cors'
-import mongoose from 'mongoose'
 import { connectDB } from './config/db-connection'
 import authRouter from './routes/auth'
 import adminRouter from './routes/admin'
 import usersRouter from './routes/users'
 import { authJwt } from './middleware/jwt'
-import { errorHandler } from './middleware/error-handler'
 import { cronJobs } from './utils/cron-jobs'
 import categoriesRouter from './routes/categories'
 import checkOutRouter from './routes/checkout'
@@ -18,61 +19,102 @@ import orderRouter from './routes/order'
 import { authorizePostRequest } from './middleware/authorization'
 import { ErrorRequestHandler } from 'express'
 
-// Environment configuration
+// Environment configuration with validation
 dotenv.config()
+const validateEnvVariables = () => {
+  const required = ['PORT', 'API_PREFIX']
+  const missing = required.filter(key => !process.env[key])
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required environment variables: ${missing.join(', ')}`
+    )
+  }
+}
+validateEnvVariables()
 
 const app = express()
 const PORT = process.env.PORT || 3000
-const API_PREFIX = process.env.API_PREFIX || ''
-const ADMIN_ROUTE = `${API_PREFIX}/admin`
-const USERS_ROUTE = `${API_PREFIX}/users`
-const CATEGORIES_ROUTE = `${API_PREFIX}/categories`
-const PRODUCTS_ROUTE = `${API_PREFIX}/products`
-const CHECK_OUT_ROUTE = `${API_PREFIX}/checkout`
-const ORDER_ROUTE = `${API_PREFIX}/order`
+const API_PREFIX = process.env.API_PREFIX || '/api/v1'
+
+// Security middleware
+app.use(helmet())
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+})
+app.use(limiter)
 
 // CORS configuration
 app.use(cors())
 app.options('*', cors())
 
-// Webhook route needs raw body
+// Stripe webhook route (must be before body parser)
 app.use(
   `${API_PREFIX}/checkout/webhook`,
-  express.raw({ type: 'application/json' })
+  express.raw({ type: 'application/json', limit: '10kb' })
 )
 
-// General middleware configuration
-app.use(bodyParser.json())
+// Body parser with size limits
+app.use(bodyParser.json({ limit: '10kb' }))
+app.use(bodyParser.urlencoded({ extended: true, limit: '10kb' }))
+
+// Logging
 app.use(morgan('tiny'))
+
+// Performance middleware
+app.use(compression())
 
 // Authentication and authorization middleware
 app.use(authJwt())
 app.use(authorizePostRequest)
 
-// Static files configuration
-app.use('/public', express.static(__dirname + '/public'))
+// Security headers
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-Frame-Options', 'DENY')
+  res.setHeader(
+    'Strict-Transport-Security',
+    'max-age=31536000; includeSubDomains'
+  )
+  next()
+})
+
+// Static files configuration with caching
+app.use(
+  '/public',
+  express.static(__dirname + '/public', {
+    maxAge: '1d',
+    etag: true
+  })
+)
+
+// Health check endpoint
+app.get('/health', (req: Request, res: Response) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() })
+})
 
 // Main router setup
 const mainRouter = express.Router()
 
-// API routes
-mainRouter.use(API_PREFIX, authRouter)
-mainRouter.use(USERS_ROUTE, usersRouter)
-mainRouter.use(ADMIN_ROUTE, adminRouter)
-mainRouter.use(CATEGORIES_ROUTE, categoriesRouter)
-mainRouter.use(PRODUCTS_ROUTE, productsRouter)
-mainRouter.use(CHECK_OUT_ROUTE, checkOutRouter)
-mainRouter.use(ORDER_ROUTE, orderRouter)
+mainRouter.use('/', authRouter)
+mainRouter.use('/users', usersRouter)
+mainRouter.use('/admin', adminRouter)
+mainRouter.use('/categories', categoriesRouter)
+mainRouter.use('/products', productsRouter)
+mainRouter.use('/checkout', checkOutRouter)
+mainRouter.use('/order', orderRouter)
 
-// Apply main router
-app.use(mainRouter)
+app.use(API_PREFIX, mainRouter)
 
 // Root route
 app.get('/', (req: Request, res: Response) => {
   res.send('BuyGhana server documentation will be available soon.')
 })
 
-// Custom 404 handler - Must be placed after all valid routes
+// Custom 404 handler
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
@@ -80,8 +122,7 @@ app.use((req: Request, res: Response) => {
   })
 })
 
-// Global error handler - Must be placed after 404 handler
-
+// Global error handler
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next): any => {
   console.error('Error:', err)
 
@@ -125,15 +166,27 @@ app.use(globalErrorHandler)
 cronJobs()
 
 // Connect to MongoDB and start server
-connectDB()
-  .then(() => {
-    app.listen(PORT, () => {
+const startServer = async () => {
+  try {
+    await connectDB()
+    const server = app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`)
     })
-  })
-  .catch(err => {
+
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+      console.log('SIGTERM received. Shutting down gracefully...')
+      server.close(() => {
+        console.log('Process terminated')
+        process.exit(0)
+      })
+    })
+  } catch (err) {
     console.error('Failed to connect to MongoDB:', err)
     process.exit(1)
-  })
+  }
+}
+
+startServer()
 
 export default app
