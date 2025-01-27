@@ -1,3 +1,4 @@
+import 'package:buyghana/core/common/widgets/custom_slidding_toast.dart';
 import 'package:buyghana/core/common/widgets/rounded_button.dart';
 import 'package:buyghana/core/common/widgets/vertical_label_field.dart';
 import 'package:buyghana/core/extensions/text_style_extensions.dart';
@@ -104,6 +105,8 @@ class _LoginFormState extends ConsumerState<LoginForm> {
           const Gap(40),
           RoundedButton(
             onPressed: () async {
+              ToastUtils.showSlidingToast(
+                  context: context, message: "This is a taast");
               if (formKey.currentState!.validate()) {
                 final email = emailController.text.trim();
                 final password = passwordController.text.trim();
