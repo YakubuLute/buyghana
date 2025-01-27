@@ -34,7 +34,8 @@ validateEnvVariables()
 
 const app = express()
 const PORT = process.env.PORT || 3000
-const API_PREFIX = process.env.API_PREFIX || '/api/v1'
+// const API_PREFIX = process.env.API_PREFIX || '/api/v1'
+const API_PREFIX = 'api/v1'
 
 // Security middleware
 app.use(helmet())
@@ -68,7 +69,7 @@ app.use(morgan('tiny'))
 app.use(compression())
 
 // Authentication and authorization middleware
-app.use(authJwt())
+// app.use(authJwt())
 app.use(authorizePostRequest)
 
 function printRoutes (router: any, baseRoute: string = '') {
@@ -81,10 +82,16 @@ function printRoutes (router: any, baseRoute: string = '') {
       console.log(`${methods}: ${baseRoute}${middleware.route.path}`)
     } else if (middleware.name === 'router') {
       // Router middleware
-      const prefix = middleware.regexp.source
-        .replace('^\\/', '/')
+      let prefix = middleware.regexp
+        .toString()
         .replace('\\/?(?=\\/|$)', '')
-        .replace('\\', '')
+        .replace(/\\\//g, '/')
+        .replace('(?:/(?=$))', '')
+        .replace(/\(\?:\(\[\^\\\/]\+\?\)\)/g, ':id')
+        .replace(/^\^/, '')
+        .replace(/\$$/, '')
+
+      if (prefix === '/') prefix = ''
       printRoutes(middleware.handle, `${baseRoute}${prefix}`)
     }
   })
@@ -116,20 +123,32 @@ app.get('/health', (req: Request, res: Response) => {
 })
 
 // Main router setup
-const mainRouter = express.Router()
+const apiRouter = express.Router()
 
-mainRouter.use('/', authRouter)
-mainRouter.use('/users', usersRouter)
-mainRouter.use('/admin', adminRouter)
-mainRouter.use('/categories', categoriesRouter)
-mainRouter.use('/products', productsRouter)
-mainRouter.use('/checkout', checkOutRouter)
-mainRouter.use('/order', orderRouter)
+// apiRouter.use('/auth', authRouter)
+// apiRouter.use('/users', usersRouter)
+// apiRouter.use('/admin', adminRouter)
+// apiRouter.use('/categories', categoriesRouter)
+// apiRouter.use('/products', productsRouter)
+// apiRouter.use('/checkout', checkOutRouter)
+// apiRouter.use('/order', orderRouter)
 
-app.use(API_PREFIX, mainRouter)
+apiRouter.use('/auth', authRouter)
+// Protected routes (require authentication)
+apiRouter.use('/users', authJwt(), usersRouter)
+apiRouter.use('/admin', authJwt(), adminRouter)
+apiRouter.use('/categories', authJwt(), categoriesRouter)
+apiRouter.use('/products', authJwt(), productsRouter)
+apiRouter.use('/checkout', authJwt(), checkOutRouter)
+apiRouter.use('/order', authJwt(), orderRouter)
+
+app.use(API_PREFIX, apiRouter)
 
 // Root route
 app.get('/', (req: Request, res: Response) => {
+  res.send('BuyGhana server documentation will be available soon.')
+})
+app.get('/api/v1/login', (req: Request, res: Response) => {
   res.send('BuyGhana server documentation will be available soon.')
 })
 
@@ -143,7 +162,7 @@ app.use((req: Request, res: Response) => {
 
 // Global error handler
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next): any => {
-  console.error('Error:', err)
+  console.trace('Error from Index.ts:', err)
 
   // Handle different types of errors
   if (err.name === 'UnauthorizedError') {
@@ -181,7 +200,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Log all incoming requests in development
 if (process.env.NODE_ENV === 'development') {
-  mainRouter.use((req, res, next) => {
+  apiRouter.use((req, res, next) => {
     console.log(`${req.method} ${req.originalUrl}`)
     next()
   })
