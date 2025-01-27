@@ -71,6 +71,25 @@ app.use(compression())
 app.use(authJwt())
 app.use(authorizePostRequest)
 
+function printRoutes (router: any, baseRoute: string = '') {
+  router.stack.forEach((middleware: any) => {
+    if (middleware.route) {
+      // Routes registered directly on this router
+      const methods = Object.keys(middleware.route.methods)
+        .join(', ')
+        .toUpperCase()
+      console.log(`${methods}: ${baseRoute}${middleware.route.path}`)
+    } else if (middleware.name === 'router') {
+      // Router middleware
+      const prefix = middleware.regexp.source
+        .replace('^\\/', '/')
+        .replace('\\/?(?=\\/|$)', '')
+        .replace('\\', '')
+      printRoutes(middleware.handle, `${baseRoute}${prefix}`)
+    }
+  })
+}
+
 // Security headers
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')
@@ -168,8 +187,12 @@ if (process.env.NODE_ENV === 'development') {
   })
 }
 
-
 app.use(globalErrorHandler)
+
+if (process.env.NODE_ENV === 'development') {
+  console.log('\nRegistered Routes:')
+  printRoutes(app._router)
+}
 
 // Initialize cron jobs
 cronJobs()

@@ -36,7 +36,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }).session(session)
 
     if (existingUser) {
-      // If user exists, we don't need to abort since we haven't modified anything
+      await session.abortTransaction()
       res.status(400).json({
         error:
           existingUser.email === email.toLowerCase()
@@ -75,7 +75,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       text: `Your verification code is: ${accountVerificationOTP}. Valid for 5 minutes.`
     })
 
-    // If we get here, everything succeeded, so commit the transaction
     await session.commitTransaction()
 
     // Send success response
@@ -85,10 +84,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       userId: user._id
     })
   } catch (error: any) {
-    // Log the full error for debugging
     console.error('Registration error:', error)
 
-    // If a transaction is in progress, abort it
     if (session.inTransaction()) {
       await session.abortTransaction()
     }
@@ -108,11 +105,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       })
     }
   } finally {
-    // Always end the session, regardless of success or failure
     await session.endSession()
   }
 }
-
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -358,7 +353,6 @@ export const resetPassword = async (
     })
   }
 }
-
 
 export const verifyOTP = async (req: Request, res: Response): Promise<void> => {
   try {

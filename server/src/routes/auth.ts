@@ -23,19 +23,19 @@ import { resendOTP } from '../controllers/otp-controller'
 const router = express.Router()
 
 // auth routes
-router.post('register', validateUser, handleValidation, register)
-router.post('login', validateLogin, handleValidation, login)
+router.post('/register', validateUser, handleValidation, register)
+router.post('/login', validateLogin, handleValidation, login)
 router.post(
-  'forgot-password',
+  '/forgot-password',
   validateForgotPassword,
   handleValidation,
   forgotPassword
 )
-router.post('verify-otp', validateVerifyOTP, handleValidation, verifyOTP)
+router.post('/verify-otp', validateVerifyOTP, handleValidation, verifyOTP)
 
 // password reset OTP route
 router.post(
-  'verify-password-reset-otp',
+  '/verify-password-reset-otp',
   validateVerifyOTP,
   handleValidation,
   verifyPasswordResetOTP
@@ -43,15 +43,15 @@ router.post(
 
 // password reset route
 router.post(
-  'reset-password',
+  '/reset-password',
   validatePasswordReset,
   handleValidation,
   resetPassword
 )
 
 // OTP verification route
-router.post('resend-otp', verifyResentOTP, handleValidation, resendOTP)
+router.post('/resend-otp', verifyResentOTP, handleValidation, resendOTP)
 // verify token
-router.get('verify-token', handleValidation, verifyToken as any)
+router.get('/verify-token', handleValidation, verifyToken as any)
 
 export default router
