@@ -193,7 +193,7 @@ class _RegistrationFormState extends ConsumerState<RegistrationForm> {
               );
             },
           ),
-          const Gap(40),
+          const Gap(20),
           // agree to terms and conditions
           Row(
             children: [
@@ -203,10 +203,9 @@ class _RegistrationFormState extends ConsumerState<RegistrationForm> {
                   setState(() {
                     checked = value!;
                   });
-                  print(checked);
                 },
               ),
-              SizedBox(width: 8),
+              SizedBox(width: 3),
               Text(
                 'I agree to the terms and conditions',
                 style: TextStyles.paragraphSubTextRegular1.grey,

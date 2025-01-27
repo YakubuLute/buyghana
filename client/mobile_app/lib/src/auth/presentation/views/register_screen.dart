@@ -17,6 +17,24 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 2,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go(LoginScreen.path);
+          },
+        ),
+        title: Text('Register',
+            style: TextStyles.headingBold1.adaptiveColour(context)),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            onPressed: () => {},
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
@@ -25,13 +43,13 @@ class RegisterScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
               children: [
                 Text(
-                  'Create an Account',
-                  textAlign: TextAlign.center,
+                  'Getting Started',
+                  // textAlign: TextAlign.center,
                   style: TextStyles.headingBold3.adaptiveColour(context),
                 ),
                 Text(
-                  'Create a new BuyFromGh account',
-                  textAlign: TextAlign.center,
+                  "Let's create you an account",
+                  // textAlign: TextAlign.center,
                   style: TextStyles.paragraphSubTextRegular1.grey,
                 ),
                 const Gap(20),

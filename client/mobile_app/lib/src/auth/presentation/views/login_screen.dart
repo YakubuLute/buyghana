@@ -36,7 +36,7 @@ class LoginScreen extends StatelessWidget {
                     style: TextStyles.headingBold3.adaptiveColour(context),
                   ),
                   Text(
-                    'Sign in with your account details.',
+                    'Enter your credentials to continue',
                     textAlign: TextAlign.center,
                     style: TextStyles.paragraphSubTextRegular1.grey,
                   ),
