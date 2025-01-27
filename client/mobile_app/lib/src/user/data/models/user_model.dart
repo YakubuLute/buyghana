@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 import 'package:buyghana/core/utils/typedefs.dart';
@@ -33,22 +34,24 @@ class UserModel extends User {
       UserModel.fromMap(jsonDecode(source) as DataMap);
 
   factory UserModel.fromMap(DataMap map) {
-    final address = AddressModel.fromMap({
-      if (map case {'street': String street}) 'street': street,
-      if (map case {'apartment': String apartment}) 'apartment': apartment,
-      if (map case {'city': String city}) 'city': city,
-      if (map case {'postalCode': String postalCode}) 'postalCode': postalCode,
-      if (map case {'country': String country}) 'country': country,
-    });
+    // Safely handle address if present
+    final address = map.containsKey('address') && map['address'] != null
+        ? AddressModel.fromMap(map['address'] as DataMap)
+        : null;
+
+    // Safely handle wishlist, defaulting to empty list if not present
+    final wishlistData = map['wishlist'] as List<dynamic>? ?? [];
+    final wishlist = wishlistData
+        .map((item) => WishlistProductModel.fromMap(item as DataMap))
+        .toList();
+
     return UserModel(
       id: map['id'] as String? ?? map['_id'] as String,
       name: map['name'] as String,
       email: map['email'] as String,
-      isAdmin: map['isAdmin'] as bool,
-      wishlist: List<DataMap>.from(map['wishlist'] as List<dynamic>)
-          .map(WishlistProductModel.fromMap)
-          .toList(),
-      address: address.isEmpty ? null : address,
+      isAdmin: map['isAdmin'] as bool? ?? false,
+      wishlist: wishlist,
+      address: address,
       phone: map['phone'] as String?,
     );
   }
@@ -85,7 +88,7 @@ class UserModel extends User {
           )
           .toList(),
       if (address != null) 'address': (address as AddressModel).toMap(),
-      if (phone != null) 'phone': phone
+      if (phone != null) 'phone': phone,
     };
   }
 

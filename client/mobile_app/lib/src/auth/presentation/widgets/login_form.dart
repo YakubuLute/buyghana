@@ -105,8 +105,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
           const Gap(40),
           RoundedButton(
             onPressed: () async {
-              ToastUtils.showSlidingToast(
-                  context: context, message: "This is a taast");
+            
               if (formKey.currentState!.validate()) {
                 final email = emailController.text.trim();
                 final password = passwordController.text.trim();

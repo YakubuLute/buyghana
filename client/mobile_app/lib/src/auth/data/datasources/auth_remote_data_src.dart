@@ -45,12 +45,12 @@ abstract class AuthRemoteDataSrc {
   Future<bool> verifyToken();
 }
 
-const REGISTER_ENDPOINT = '/register';
-const LOGIN_ENDPOINT = '/login';
-const FORGOT_PASSWORD_ENDPOINT = '/forgot-password';
-const VERIFY_OTP_ENDPOINT = '/verify-otp';
-const RESET_PASSWORD_ENDPOINT = '/reset-password';
-const VERIFY_TOKEN_ENDPOINT = '/verify-token';
+const REGISTER_ENDPOINT = '/auth/register';
+const LOGIN_ENDPOINT = '/auth/login';
+const FORGOT_PASSWORD_ENDPOINT = '/auth/forgot-password';
+const VERIFY_OTP_ENDPOINT = '/auth/verify-otp';
+const RESET_PASSWORD_ENDPOINT = '/auth/reset-password';
+const VERIFY_TOKEN_ENDPOINT = '/auth/verify-token';
 
 class AuthRemoteDataSrcImpl implements AuthRemoteDataSrc {
   const AuthRemoteDataSrcImpl(this._client);
@@ -94,6 +94,42 @@ class AuthRemoteDataSrcImpl implements AuthRemoteDataSrc {
     }
   }
 
+  // @override
+  // Future<UserModel> login({
+  //   required String email,
+  //   required String password,
+  // }) async {
+  //   try {
+  //     final uri = Uri.parse('${NetworkConstants.baseUrl}$LOGIN_ENDPOINT');
+
+  //     final response = await _client.post(
+  //       uri,
+  //       body: jsonEncode({'password': password, 'email': email}),
+  //       headers: NetworkConstants.headers,
+  //     );
+  //     final payload = jsonDecode(response.body) as DataMap;
+  //     print("Payload:  $payload");
+  //     if (response.statusCode != 200) {
+  //       final errorResponse = ErrorResponse.fromMap(payload);
+  //       throw ServerException(
+  //         message: errorResponse.errorMessage,
+  //         statusCode: response.statusCode,
+  //       );
+  //     }
+  //     await sl<CacheHelper>().cacheSessionToken(payload['accessToken']);
+  //     final user = UserModel.fromMap(payload);
+  //     await sl<CacheHelper>().cacheUserId(user.id);
+  //     return user;
+  //   } on ServerException {
+  //     rethrow;
+  //   } catch (e, s) {
+  //     print("Error login in: ====================== $e");
+  //     debugPrint(e.toString());
+  //     debugPrintStack(stackTrace: s);
+  //     throw ServerException(message: e.toString(), statusCode: 500);
+  //   }
+  // }
+
   @override
   Future<UserModel> login({
     required String email,
@@ -107,7 +143,10 @@ class AuthRemoteDataSrcImpl implements AuthRemoteDataSrc {
         body: jsonEncode({'password': password, 'email': email}),
         headers: NetworkConstants.headers,
       );
+
       final payload = jsonDecode(response.body) as DataMap;
+      print("Payload:  $payload");
+
       if (response.statusCode != 200) {
         final errorResponse = ErrorResponse.fromMap(payload);
         throw ServerException(
@@ -115,13 +154,21 @@ class AuthRemoteDataSrcImpl implements AuthRemoteDataSrc {
           statusCode: response.statusCode,
         );
       }
-      await sl<CacheHelper>().cacheSessionToken(payload['accessToken']);
-      final user = UserModel.fromMap(payload);
+
+      // Cache the tokens
+      await sl<CacheHelper>()
+          .cacheSessionToken(payload['accessToken'] as String);
+
+      // Create user model from the nested user data
+      final userData = payload['user'] as DataMap;
+      final user = UserModel.fromMap(userData);
+
       await sl<CacheHelper>().cacheUserId(user.id);
       return user;
     } on ServerException {
       rethrow;
     } catch (e, s) {
+      print("Error login in: ====================== $e");
       debugPrint(e.toString());
       debugPrintStack(stackTrace: s);
       throw ServerException(message: e.toString(), statusCode: 500);

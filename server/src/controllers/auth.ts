@@ -72,7 +72,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     await sendEmail({
       to: email,
       subject: 'Verify Your Account',
-      text: `Your verification code is: ${accountVerificationOTP}. Valid for 5 minutes.`
+      text: `Your verification code is: ${accountVerificationOTP}. This code is valid for 5 minutes.`
     })
 
     await session.commitTransaction()
