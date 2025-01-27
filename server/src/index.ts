@@ -160,6 +160,15 @@ if (process.env.NODE_ENV === 'development') {
   })
 }
 
+// Log all incoming requests in development
+if (process.env.NODE_ENV === 'development') {
+  mainRouter.use((req, res, next) => {
+    console.log(`${req.method} ${req.originalUrl}`)
+    next()
+  })
+}
+
+
 app.use(globalErrorHandler)
 
 // Initialize cron jobs
