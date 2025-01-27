@@ -7,22 +7,27 @@ import bodyParser from 'body-parser'
 import morgan from 'morgan'
 import cors from 'cors'
 import { connectDB } from './config/db-connection'
+import { ErrorRequestHandler } from 'express'
+
+// Route imports
 import authRouter from './routes/auth'
 import adminRouter from './routes/admin'
 import usersRouter from './routes/users'
-import { authJwt } from './middleware/jwt'
-import { cronJobs } from './utils/cron-jobs'
 import categoriesRouter from './routes/categories'
 import checkOutRouter from './routes/checkout'
 import productsRouter from './routes/products'
 import orderRouter from './routes/order'
-import { authorizePostRequest } from './middleware/authorization'
-import { ErrorRequestHandler } from 'express'
 
-// Environment configuration with validation
+// Middleware imports
+import { authJwt } from './middleware/jwt'
+import { cronJobs } from './utils/cron-jobs'
+
+// Environment configuration
 dotenv.config()
+
+// Validate required environment variables
 const validateEnvVariables = () => {
-  const required = ['PORT', 'API_PREFIX']
+  const required = ['PORT', 'API_PREFIX', 'JWT_SECRET', 'MONGODB_URI']
   const missing = required.filter(key => !process.env[key])
   if (missing.length > 0) {
     throw new Error(
@@ -32,72 +37,58 @@ const validateEnvVariables = () => {
 }
 validateEnvVariables()
 
+// App Configuration
 const app = express()
 const PORT = process.env.PORT || 3000
-// const API_PREFIX = process.env.API_PREFIX || '/api/v1'
-const API_PREFIX = 'api/v1'
+const API_PREFIX = process.env.API_PREFIX || '/api/v1'
+const NODE_ENV = process.env.NODE_ENV || 'development'
 
-// Security middleware
+// Security Middleware
 app.use(helmet())
 
-// Rate limiting
+// Rate Limiting Configuration
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false
 })
 app.use(limiter)
 
-// CORS configuration
-app.use(cors())
-app.options('*', cors())
+// CORS Configuration
+const corsOptions = {
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  credentials: true,
+  maxAge: 86400 // 24 hours
+}
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))
 
-// Stripe webhook route (must be before body parser)
+// Stripe Webhook Configuration (must be before body parser)
 app.use(
   `${API_PREFIX}/checkout/webhook`,
   express.raw({ type: 'application/json', limit: '10kb' })
 )
 
-// Body parser with size limits
+// Request Parsing
 app.use(bodyParser.json({ limit: '10kb' }))
 app.use(bodyParser.urlencoded({ extended: true, limit: '10kb' }))
 
-// Logging
-app.use(morgan('tiny'))
-
-// Performance middleware
-app.use(compression())
-
-// Authentication and authorization middleware
-// app.use(authJwt())
-app.use(authorizePostRequest)
-
-function printRoutes (router: any, baseRoute: string = '') {
-  router.stack.forEach((middleware: any) => {
-    if (middleware.route) {
-      // Routes registered directly on this router
-      const methods = Object.keys(middleware.route.methods)
-        .join(', ')
-        .toUpperCase()
-      console.log(`${methods}: ${baseRoute}${middleware.route.path}`)
-    } else if (middleware.name === 'router') {
-      // Router middleware
-      let prefix = middleware.regexp
-        .toString()
-        .replace('\\/?(?=\\/|$)', '')
-        .replace(/\\\//g, '/')
-        .replace('(?:/(?=$))', '')
-        .replace(/\(\?:\(\[\^\\\/]\+\?\)\)/g, ':id')
-        .replace(/^\^/, '')
-        .replace(/\$$/, '')
-
-      if (prefix === '/') prefix = ''
-      printRoutes(middleware.handle, `${baseRoute}${prefix}`)
-    }
-  })
+// Logging Configuration
+if (NODE_ENV === 'development') {
+  app.use(morgan('dev'))
+} else {
+  app.use(morgan('combined'))
 }
 
-// Security headers
+// Performance Middleware
+app.use(compression())
+
+// Security Headers
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('X-Content-Type-Options', 'nosniff')
   res.setHeader('X-Frame-Options', 'DENY')
@@ -108,7 +99,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next()
 })
 
-// Static files configuration with caching
+// Static Files Configuration
 app.use(
   '/public',
   express.static(__dirname + '/public', {
@@ -117,42 +108,47 @@ app.use(
   })
 )
 
-// Health check endpoint
+// Health Check Endpoint
 app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() })
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    environment: NODE_ENV
+  })
 })
 
-// Main router setup
+// API Router Configuration
 const apiRouter = express.Router()
 
-// apiRouter.use('/auth', authRouter)
-// apiRouter.use('/users', usersRouter)
-// apiRouter.use('/admin', adminRouter)
-// apiRouter.use('/categories', categoriesRouter)
-// apiRouter.use('/products', productsRouter)
-// apiRouter.use('/checkout', checkOutRouter)
-// apiRouter.use('/order', orderRouter)
-
+// Public Routes (No Authentication Required)
 apiRouter.use('/auth', authRouter)
-// Protected routes (require authentication)
-apiRouter.use('/users', authJwt(), usersRouter)
-apiRouter.use('/admin', authJwt(), adminRouter)
-apiRouter.use('/categories', authJwt(), categoriesRouter)
-apiRouter.use('/products', authJwt(), productsRouter)
-apiRouter.use('/checkout', authJwt(), checkOutRouter)
-apiRouter.use('/order', authJwt(), orderRouter)
+apiRouter.use('/categories', categoriesRouter)
+apiRouter.use('/products', productsRouter)
 
+// Protected Routes (Authentication Required)
+const protectedRouter = express.Router()
+protectedRouter.use(authJwt())
+
+protectedRouter.use('/users', usersRouter)
+protectedRouter.use('/admin', adminRouter)
+protectedRouter.use('/checkout', checkOutRouter)
+protectedRouter.use('/order', orderRouter)
+
+apiRouter.use('/', protectedRouter)
+
+// Mount API Router
 app.use(API_PREFIX, apiRouter)
 
-// Root route
+// Root Route
 app.get('/', (req: Request, res: Response) => {
-  res.send('BuyGhana server documentation will be available soon.')
-})
-app.get('/api/v1/login', (req: Request, res: Response) => {
-  res.send('BuyGhana server documentation will be available soon.')
+  res.status(200).json({
+    message: 'BuyGhana API Server',
+    version: '1.0.0',
+    documentation: '/api/docs' // If you add API documentation later
+  })
 })
 
-// Custom 404 handler
+// 404 Handler
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
@@ -160,80 +156,132 @@ app.use((req: Request, res: Response) => {
   })
 })
 
-// Global error handler
-const globalErrorHandler: ErrorRequestHandler = (err, req, res, next): any => {
-  console.trace('Error from Index.ts:', err)
-
-  // Handle different types of errors
-  if (err.name === 'UnauthorizedError') {
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid token or no token provided'
-    })
+// Global Error Handler
+const globalErrorHandler: ErrorRequestHandler = (err, req, res, next): void => {
+  // Prevent multiple responses
+  if (res.headersSent) {
+    return next(err)
   }
 
-  if (err.name === 'ValidationError') {
-    return res.status(400).json({
-      success: false,
-      message: err.message
-    })
-  }
+  // Log error details (consider using a proper logging service in production)
+  console.error('Error details:', {
+    name: err.name,
+    message: err.message,
+    stack: NODE_ENV === 'development' ? err.stack : undefined,
+    path: req.path,
+    method: req.method
+  })
 
-  // Default error response
-  res.status(err.status || 500).json({
+  // Handle specific error types
+  const errorResponse = {
     success: false,
-    message: err.message || 'Internal server error',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-  })
-}
+    message: 'Internal server error',
+    ...(NODE_ENV === 'development' && { stack: err.stack })
+  }
 
-// Route logging for development
-if (process.env.NODE_ENV === 'development') {
-  app._router.stack.forEach((r: any) => {
-    if (r.route && r.route.path) {
-      console.log(
-        `Route: ${r.route.stack[0].method.toUpperCase()} ${r.route.path}`
-      )
-    }
-  })
-}
+  switch (err.name) {
+    case 'UnauthorizedError':
+      return res.status(401).json({
+        ...errorResponse,
+        message: 'Invalid token or no token provided'
+      })
 
-// Log all incoming requests in development
-if (process.env.NODE_ENV === 'development') {
-  apiRouter.use((req, res, next) => {
-    console.log(`${req.method} ${req.originalUrl}`)
-    next()
-  })
+    case 'ValidationError':
+      return res.status(400).json({
+        ...errorResponse,
+        message: err.message
+      })
+
+    case 'MongoError':
+    case 'MongoServerError':
+      if (err.code === 11000) {
+        return res.status(409).json({
+          ...errorResponse,
+          message: 'Duplicate key error'
+        })
+      }
+      break
+
+    default:
+      // Handle all other errors
+      return res.status(err.status || 500).json(errorResponse)
+  }
 }
 
 app.use(globalErrorHandler)
 
-if (process.env.NODE_ENV === 'development') {
+// Development Route Logging
+if (NODE_ENV === 'development') {
+  const printRoutes = (router: any, baseRoute: string = '') => {
+    router.stack.forEach((middleware: any) => {
+      if (middleware.route) {
+        const methods = Object.keys(middleware.route.methods)
+          .join(', ')
+          .toUpperCase()
+        console.log(`${methods}: ${baseRoute}${middleware.route.path}`)
+      } else if (middleware.name === 'router') {
+        const prefix = middleware.regexp.source
+          .replace('\\/?(?=\\/|$)', '')
+          .replace(/^\^\\/, '')
+          .replace(/\\\/\?\(\?=\\\/\|\$\)$/, '')
+          .replace(/\\\//g, '/')
+
+        if (prefix !== '/') {
+          printRoutes(middleware.handle, `${baseRoute}${prefix}`)
+        }
+      }
+    })
+  }
+
   console.log('\nRegistered Routes:')
   printRoutes(app._router)
 }
 
-// Initialize cron jobs
+// Initialize Cron Jobs
 cronJobs()
 
-// Connect to MongoDB and start server
+// Server Startup
 const startServer = async () => {
   try {
     await connectDB()
     const server = app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`)
+      console.log(`
+========================================
+  Server Status: Running
+  Environment: ${NODE_ENV}
+  Port: ${PORT}
+  API Prefix: ${API_PREFIX}
+  MongoDB: Connected
+========================================
+      `)
     })
 
-    // Graceful shutdown
-    process.on('SIGTERM', () => {
-      console.log('SIGTERM received. Shutting down gracefully...')
+    // Graceful Shutdown Configuration
+    const gracefulShutdown = () => {
+      console.log('\nStarting graceful shutdown...')
       server.close(() => {
-        console.log('Process terminated')
+        console.log('Server closed')
         process.exit(0)
       })
+
+      // Force shutdown after 30 seconds
+      setTimeout(() => {
+        console.error(
+          'Could not close connections in time, forcefully shutting down'
+        )
+        process.exit(1)
+      }, 30000)
+    }
+
+    // Shutdown Handlers
+  process.on('SIGTERM', gracefulShutdown)
+process.on('SIGINT', gracefulShutdown)
+
+    process.on('unhandledRejection', (reason, promise) => {
+      console.error('Unhandled Rejection at:', promise, 'reason:', reason)
     })
   } catch (err) {
-    console.error('Failed to connect to MongoDB:', err)
+    console.error('Failed to start server:', err)
     process.exit(1)
   }
 }
