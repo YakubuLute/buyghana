@@ -1,5 +1,3 @@
-// ignore_for_file: constant_identifier_names
-
 import 'dart:convert';
 
 import 'package:buyghana/core/common/models/error_reponse.dart';
@@ -404,6 +402,41 @@ class ProductRemoteDataSrcImpl implements ProductRemoteDataSrc {
     }
   }
 
+  // @override
+  // Future<List<ProductCategoryModel>> getCategories() async {
+  //   try {
+  //     final uri = Uri.parse(
+  //       '${NetworkConstants.baseUrl}$GET_CATEGORIES_ENDPOINT',
+  //     );
+
+  //     final response = await _client.get(
+  //       uri,
+  //       headers: Cache.instance.sessionToken!.toHeaders,
+  //     );
+  //     final payload = jsonDecode(response.body);
+  //     await NetworkUtils.renewToken(response);
+  //     if (response.statusCode != 200) {
+  //       payload as DataMap;
+  //       final errorResponse = ErrorResponse.fromMap(payload);
+  //       throw ServerException(
+  //         message: errorResponse.errorMessage,
+  //         statusCode: response.statusCode,
+  //       );
+  //     }
+  //     payload as List<dynamic>;
+  //     return payload
+  //         .cast<DataMap>()
+  //         .map((category) => ProductCategoryModel.fromMap(category))
+  //         .toList();
+  //   } on ServerException {
+  //     rethrow;
+  //   } catch (e, s) {
+  //     debugPrint(e.toString());
+  //     debugPrintStack(stackTrace: s);
+  //     throw ServerException(message: e.toString(), statusCode: 500);
+  //   }
+  // }
+
   @override
   Future<List<ProductCategoryModel>> getCategories() async {
     try {
@@ -415,25 +448,33 @@ class ProductRemoteDataSrcImpl implements ProductRemoteDataSrc {
         uri,
         headers: Cache.instance.sessionToken!.toHeaders,
       );
+
       final payload = jsonDecode(response.body);
+      print(
+          "Categories Response Payload: $payload"); // Added this line to debug
+
       await NetworkUtils.renewToken(response);
+
       if (response.statusCode != 200) {
-        payload as DataMap;
-        final errorResponse = ErrorResponse.fromMap(payload);
+        final errorResponse = ErrorResponse.fromMap(payload as DataMap);
         throw ServerException(
           message: errorResponse.errorMessage,
           statusCode: response.statusCode,
         );
       }
-      payload as List<dynamic>;
-      return payload
-          .cast<DataMap>()
-          .map((category) => ProductCategoryModel.fromMap(category))
+
+      //Todo: The categories are probably nested inside a field
+      final categories = payload['categories'] as List<dynamic>? ??
+          payload['data'] as List<dynamic>? ??
+          payload as List<dynamic>;
+
+      return categories
+          .map((category) => ProductCategoryModel.fromMap(category as DataMap))
           .toList();
     } on ServerException {
       rethrow;
     } catch (e, s) {
-      debugPrint(e.toString());
+      debugPrint("Categories error: $e");
       debugPrintStack(stackTrace: s);
       throw ServerException(message: e.toString(), statusCode: 500);
     }
