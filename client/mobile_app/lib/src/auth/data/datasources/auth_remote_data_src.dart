@@ -45,12 +45,12 @@ abstract class AuthRemoteDataSrc {
   Future<bool> verifyToken();
 }
 
-const REGISTER_ENDPOINT = '/register';
-const LOGIN_ENDPOINT = '/login';
-const FORGOT_PASSWORD_ENDPOINT = '/forgot-password';
-const VERIFY_OTP_ENDPOINT = '/verify-otp';
-const RESET_PASSWORD_ENDPOINT = '/reset-password';
-const VERIFY_TOKEN_ENDPOINT = '/verify-token';
+const REGISTER_ENDPOINT = 'auth/register';
+const LOGIN_ENDPOINT = 'auth/login';
+const FORGOT_PASSWORD_ENDPOINT = 'auth/forgot-password';
+const VERIFY_OTP_ENDPOINT = 'auth/verify-otp';
+const RESET_PASSWORD_ENDPOINT = 'auth/reset-password';
+const VERIFY_TOKEN_ENDPOINT = 'auth/verify-token';
 
 class AuthRemoteDataSrcImpl implements AuthRemoteDataSrc {
   const AuthRemoteDataSrcImpl(this._client);
@@ -122,6 +122,7 @@ class AuthRemoteDataSrcImpl implements AuthRemoteDataSrc {
     } on ServerException {
       rethrow;
     } catch (e, s) {
+      print("Error $e");
       debugPrint(e.toString());
       debugPrintStack(stackTrace: s);
       throw ServerException(message: e.toString(), statusCode: 500);
