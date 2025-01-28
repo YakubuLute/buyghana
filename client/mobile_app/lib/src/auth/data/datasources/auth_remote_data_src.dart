@@ -110,7 +110,7 @@ class AuthRemoteDataSrcImpl implements AuthRemoteDataSrc {
       final payload = jsonDecode(response.body) as DataMap;
       print("Payload:  $payload");
       if (response.statusCode != 200) {
-        final errorResponse = ErrorResponse.fromMap(payload['user']);
+        final errorResponse = ErrorResponse.fromMap(payload);
         throw ServerException(
           message: errorResponse.errorMessage,
           statusCode: response.statusCode,
