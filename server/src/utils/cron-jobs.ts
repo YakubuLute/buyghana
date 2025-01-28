@@ -81,7 +81,7 @@ export const cronJobs = () => {
             // Transaction failed, abort the operation
             console.error('Product update failed. Potential concurrency issue.')
             await session.abortTransaction()
-            session.endSession()
+            session.endSession() 
             return
           }
         }

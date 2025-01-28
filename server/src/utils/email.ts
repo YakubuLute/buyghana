@@ -9,7 +9,7 @@ interface EmailOptions {
 
 export const sendEmail = async (options: EmailOptions): Promise<void> => {
   try {
-    // Create transporter with secure configuration
+    // transporter with secure configuration
     const transporter = createTransport({
       service: 'Gmail',
       auth: {
@@ -26,7 +26,7 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
     await transporter.verify()
 
     const mailOptions = {
-      from: `"Your App Name" <${process.env.EMAIL_USER}>`,
+      from: `${process.env.EMAIL_USER}`,
       to: options.to,
       subject: options.subject,
       text: options.text,
